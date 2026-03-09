@@ -1,0 +1,79 @@
+.modalDialogCentered{
+    max-width: 60%;
+}
+.modalContent{
+    position: absolute;
+    top: 0px;
+    border: 1px solid black;
+}
+#removeMedia {
+    cursor: pointer;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: red;
+    background: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+#mediaModal{
+    background: #0000005c;
+}
+.external_link {
+    display: block;
+}
+
+.iframe {
+    display: none;
+}
+.quiz_link {
+    display: none;
+}
+#mediaId {
+    display: none;
+}
+
+.sortable, .sortable ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sortable li {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    cursor: move;
+    position: relative;
+    background-color:white;
+}
+
+
+.add-child-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.blue-background-class {
+    background-color: blue !important;
+    color: white;
+}
+
+.dragging {
+    opacity: 1 !important; /* Ensure the dragged element stays visible */
+}
+
+.ghost {
+    opacity: 1 !important; /* Ensure the ghost element stays visible */
+}
+
+.topic-row {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,357 @@
+.w-30 {
+    width: 30% !important;
+}
+
+.w-70 {
+    width: 70% !important;
+}
+
+.width-80 {
+    width: 80px;
+}
+
+.width-120 {
+    width: 120px;
+}
+
+.width-200 {
+    width: 200px;
+}
+
+.width-300 {
+    width: 300px;
+}
+
+.width-400 {
+    width: 400px;
+}
+
+.width-60 {
+    width: 60px;
+}
+
+.model-xxl {
+    max-width: 1400px;
+}
+
+.spinner .spin-icon {
+    font-size: 32px;
+    position: absolute;
+}
+
+.validation-container {
+    color: #f46a6a;
+    font-weight: bolder;
+}
+
+.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 100%;
+}
+
+.right-bar {
+    width: 450px;
+    right: -460px
+}
+
+/* Marketplace search */
+
+#marketplace-search input.account-search {
+    background: transparent;
+    border: none;
+    display: inline-block;
+    font-size: 14px;
+    vertical-align: middle;
+    margin-left: -5px;
+    padding: 0;
+    outline: none;
+}
+
+#marketplace-search {
+    padding: 10px 14px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(230, 230, 230, .7);
+}
+
+.marketplace-search {
+    margin-left: 5px;
+    display: inline-block;
+    opacity: .7;
+    font-size: 14px;
+    vertical-align: middle;
+    line-height: 12px;
+}
+
+#marketplace-search input.account-search {
+    width: calc(100% - 50px);
+    line-height: 20px;
+}
+
+.marketplace-search i {
+    margin-right: 14px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+body[data-sidebar=dark].vertical-collpsed {
+    min-height: 910px;
+}
+
+.swal2-container {
+    z-index: 100000;
+}
+
+@media (min-width: 576px) {
+    #linkPoModalBody {
+        max-width: 40% !important;
+    }
+
+    .modal-dialog {
+        max-width: 70% !important;
+    }
+}
+
+/* End of Marketplace Search */
+
+
+.fa-copy {
+    color: #a4b2cb;
+    cursor: pointer;
+}
+
+.card-header {
+    padding: .20rem .75rem !important;
+}
+
+.card-body {
+    padding: .20rem .75rem !important;
+}
+
+.green {
+    color: #37458b;
+}
+
+.red {
+    color: red;
+}
+
+.img-container {
+    position: relative;
+    display: inline-block;
+}
+
+.img-container img {
+    border: 2px solid #d0d0d0; /* Set border color to gray */
+    border-radius: 10px; /* Adjust the radius as needed */
+    width: 100%; /* Ensure the image fills the div */
+}
+
+.edit-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #696ef3; /* Set icon color to blue */
+    border-radius: 50%; /* Make the icon circular */
+    padding: 5px; /* Adjust padding for better icon size */
+}
+
+.border-gray {
+    border-color: #d0d0d0 !important;
+}
+
+.parent {
+    background-color: #dee3fb !important;
+}
+
+.td-custom {
+    padding: 5px !important;
+}
+
+.white-bg {
+    background-color: #fff !important; /* White background */
+}
+
+.gray-bg {
+    background-color: #f6f6f6 !important; /* Light gray background */
+}
+
+.fa-copy {
+    color: #a4b2cb;
+}
+
+.card-header {
+    padding: .20rem .75rem !important;
+}
+
+.card-body {
+    padding: .20rem .75rem !important;
+}
+
+.red {
+    color: red;
+}
+
+.blue {
+    color: #696ef3;
+}
+
+.img-container {
+    position: relative;
+    display: inline-block;
+}
+
+.img-container img {
+    border: 2px solid #d0d0d0; /* Set border color to gray */
+    border-radius: 10px; /* Adjust the radius as needed */
+    width: 100%; /* Ensure the image fills the div */
+}
+
+.edit-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #696ef3; /* Set icon color to blue */
+    border-radius: 50%; /* Make the icon circular */
+    padding: 5px; /* Adjust padding for better icon size */
+}
+
+.border-gray {
+    border-color: #d0d0d0 !important;
+}
+
+.form-group.animated {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-control.animated {
+    padding: 0.50rem; /* Adjust padding to accommodate label */
+}
+
+.form-control.animated::placeholder {
+    color: transparent; /* Hide placeholder text */
+}
+
+.animate-label {
+    position: absolute;
+    top: 0.10rem;
+    left: 0.75rem;
+    padding: 0.25rem;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    background: white; /* Match the input background */
+}
+
+.form-control.animated:focus ~ label,
+.form-control.animated:not(:placeholder-shown) ~ label {
+    top: -0.6rem;
+    left: 0.75rem;
+    font-size: 0.75rem;
+    color: #37458b; /* Change color as needed */
+    background: white;
+    padding: 0 0.25rem;
+}
+
+.fa-copy {
+    color: #a4b2cb;
+}
+
+.gray {
+    color: #a4b2cb;
+}
+
+.card-header {
+    padding: .20rem .75rem !important;
+}
+
+.card-body {
+    padding: .20rem .75rem !important;
+}
+
+.red {
+    color: red;
+}
+
+.blue {
+    color: #696ef3;
+}
+
+.img-container {
+    position: relative;
+    display: inline-block;
+}
+
+.img-container img {
+    border: 2px solid #d0d0d0; /* Set border color to gray */
+    border-radius: 10px; /* Adjust the radius as needed */
+    width: 100%; /* Ensure the image fills the div */
+}
+
+.cu-badge-pa {
+    padding: 0.50em 1.4em;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.navbar-header {
+    height: 58px !important;
+}
+
+.breadcrumb-item {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.header-profile-user {
+    height: 30px;
+    width: 30px;
+}
+
+#page-header-user-dropdown span {
+    font-size: 14px;
+}
+
+.page-content {
+    padding: calc(60px + 1.25rem) calc(1.25rem / 2) 60px calc(1.25rem / 2);
+}
+
+.img-container img {
+    border: 2px solid #ebebeb;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.img-thumbnail {
+    height: 103px;
+    object-fit: contain;
+    background: white;
+    padding: 3px 0;
+}
+
+.pagination-wrapper {
+    background: #dee3fb;
+    padding: 6px 6px;
+}
+
+.dataTables_length {
+    margin-top: 5px;
+}
+
+.dataTables_length label {
+    margin-bottom: 0 !important;
+}
+
+.dataTables_info {
+    padding-top: 8px !important;
+    font-size: 16px;
+}
+
+.popover {
+    max-width: none;
+}

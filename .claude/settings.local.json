@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php:*)",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(xargs perl:*)",
+      "Bash(for f in /Users/sixlogics_7/sites/lms_updated/resources/views/admin/fileLibrary/index.blade.php /Users/sixlogics_7/sites/lms_updated/resources/views/admin/quizzes/index.blade.php /Users/sixlogics_7/sites/lms_updated/resources/views/admin/quizzes/attempts/index.blade.php /Users/sixlogics_7/sites/lms_updated/resources/views/admin/roles/index.blade.php /Users/sixlogics_7/sites/lms_updated/resources/views/admin/permissions/index.blade.php /Users/sixlogics_7/sites/lms_updated/resources/views/admin/support-tickets/index.blade.php /Users/sixlogics_7/sites/lms_updated/resources/views/admin/assignments/submitted_assignments.blade.php /Users/sixlogics_7/sites/lms_updated/resources/views/admin/courses/progress/index.blade.php)",
+      "Bash(do echo \"=== $f ===\")",
+      "Read(//Users/sixlogics_7/sites/lms_updated/**)",
+      "Bash(done)",
+      "Bash(xargs cat:*)",
+      "Bash(xargs ls:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ]
+}
