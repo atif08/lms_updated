@@ -66,9 +66,9 @@ Route::mediaLibrary();
 
 Route::prefix('admin')->group(function () {
 
-    Route::get('/', [UsersController::class, 'handleRedirect'])->name('home');
+    Route::get('/', [UsersController::class, 'handleRedirect'])->name('admin.home');
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('admin.get.login');
-    Route::post('/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('admin.post.login');
 
     Route::middleware(['auth', 'check_user_type'])->group(function () {
         Route::prefix('users')->name('users.')->group(function () {
@@ -252,8 +252,3 @@ Route::prefix('imports')->name('imports.')->group(function () {
 });
 
 
-Route::prefix('profile')->name('profile.')->group(function () {
-    Route::get('/', [ProfileController::class, 'getIndex'])->name('get.index');
-    Route::post('/', [ProfileController::class, 'postIndex'])->name('post.index');
-    Route::post('/password', [ProfileController::class, 'postPassword'])->name('post.password');
-});
