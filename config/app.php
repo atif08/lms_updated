@@ -31,7 +31,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'instance' => env('APP_ENV', 'production') == 'production' ? file_get_contents("http://instance-data/latest/meta-data/instance-id") : env('APP_ENV', 'production'),
+    'instance' => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
