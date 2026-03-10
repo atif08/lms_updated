@@ -40,9 +40,13 @@
                                     <td>{{$assignment->name}}</td>
                                     <td>{{\Carbon\Carbon::parse($assignment->pivot->due_date)->format(config('constants.date_format'))}}</td>
                                     <td>
-                                        <a target="__blank" href="{{ $assignment->media[0]->original_url }}">
+                                        @if($assignment->getFirstMediaUrl())
+                                        <a target="__blank" href="{{ $assignment->getFirstMediaUrl() }}">
                                             <strong>View Task</strong>
                                         </a>
+                                        @else
+                                        <span class="text-muted">No file</span>
+                                        @endif
                                     </td>
                                     <td>
                                         <a target="__blank" class="get-submissions-btn"
