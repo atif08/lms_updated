@@ -1,16 +1,16 @@
 {
   "resources/css/spa.css": {
-    "file": "assets/spa-fVQ_o-n4.css",
+    "file": "assets/spa-CcVp_qWF.css",
     "src": "resources/css/spa.css",
     "isEntry": true
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-DKJF8ROU.js",
+    "file": "assets/app-CiusugYf.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
     "css": [
-      "assets/spa-fVQ_o-n4.css"
+      "assets/spa-CcVp_qWF.css"
     ]
   }
 }

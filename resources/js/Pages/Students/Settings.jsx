@@ -1,8 +1,11 @@
-import { useForm, usePage, Link } from '@inertiajs/react';
+import { useForm, usePage, Link, router } from '@inertiajs/react';
+import { useRef, useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import Breadcrumb from '@/Components/Common/Breadcrumb';
 import StudentSidebar from '@/Components/Common/StudentSidebar';
 import InputField, { inputClass } from '@/Components/UI/InputField';
+
+const DEFAULT_AVATAR = '/frontend/img/students/profile-avatar.png';
 
 const COUNTRY_CODES = [
     '+971', '+92', '+1', '+44', '+91', '+49', '+33', '+81', '+86', '+61',
@@ -43,7 +46,11 @@ export default function Settings() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     <StudentSidebar />
 
-                    <div className="flex-1">
+                    <div className="flex-1 space-y-5">
+                        {/* Avatar card */}
+                        <AvatarUploader currentAvatar={user.avatar} />
+
+                        {/* Profile form */}
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
                             {/* Tabs */}
                             <div className="flex border-b border-gray-100 px-6 pt-5 gap-4">
@@ -147,5 +154,131 @@ export default function Settings() {
                 </div>
             </div>
         </MainLayout>
+    );
+}
+
+function AvatarUploader({ currentAvatar }) {
+    const fileRef = useRef(null);
+    const [preview, setPreview] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            setError('Please select an image file.');
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            setError('Image must be smaller than 2 MB.');
+            return;
+        }
+
+        setError(null);
+        setPreview(URL.createObjectURL(file));
+    };
+
+    const handleUpload = () => {
+        const file = fileRef.current?.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        const form = new FormData();
+        form.append('avatar', file);
+        form.append('_token', document.querySelector('meta[name="csrf-token"]')?.content ?? '');
+
+        router.post('/students/avatar', form, {
+            forceFormData: true,
+            onFinish: () => setUploading(false),
+            onError: () => {
+                setError('Upload failed. Please try again.');
+                setUploading(false);
+            },
+        });
+    };
+
+    const displayed = preview ?? (currentAvatar || DEFAULT_AVATAR);
+
+    return (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h5 className="text-sm font-semibold text-gray-700 mb-4">Profile Picture</h5>
+
+            <div className="flex items-center gap-6">
+                {/* Avatar preview */}
+                <div className="relative shrink-0">
+                    <img
+                        src={displayed}
+                        alt="Avatar"
+                        className="h-24 w-24 rounded-full object-cover ring-4 ring-indigo-100"
+                        onError={e => { e.target.src = DEFAULT_AVATAR; }}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => fileRef.current?.click()}
+                        className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow hover:bg-indigo-700 transition-colors"
+                        title="Change photo"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.768-6.768a2 2 0 112.828 2.828L11.828 15.828a4 4 0 01-1.414.94l-3.414.586.586-3.414a4 4 0 01.94-1.414z" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Info + actions */}
+                <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-600">Click the pencil icon or the button below to upload a new profile picture.</p>
+                    <p className="text-xs text-gray-400 mt-1">JPG, PNG or GIF · max 2 MB</p>
+
+                    {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+
+                    <div className="mt-3 flex items-center gap-3 flex-wrap">
+                        <button
+                            type="button"
+                            onClick={() => fileRef.current?.click()}
+                            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                            Choose Photo
+                        </button>
+
+                        {preview && (
+                            <button
+                                type="button"
+                                onClick={handleUpload}
+                                disabled={uploading}
+                                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 transition-opacity"
+                            >
+                                {uploading && (
+                                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                    </svg>
+                                )}
+                                {uploading ? 'Uploading…' : 'Save Photo'}
+                            </button>
+                        )}
+
+                        {preview && !uploading && (
+                            <button
+                                type="button"
+                                onClick={() => { setPreview(null); setError(null); if (fileRef.current) fileRef.current.value = ''; }}
+                                className="text-sm text-gray-400 hover:text-gray-600"
+                            >
+                                Cancel
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+            />
+        </div>
     );
 }

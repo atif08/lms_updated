@@ -68,6 +68,7 @@ class User extends Authenticatable implements HasMedia
         'first_name',
         'last_name',
         'mobile',
+        'country_code',
         'gender',
         'email',
         'institution',
@@ -110,6 +111,7 @@ class User extends Authenticatable implements HasMedia
     {
         $this->addMediaCollection('avatar')->singleFile();
     }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('preview')
@@ -156,7 +158,8 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsTo(Batch::class);
     }
 
-    public function courses(): HasMany{
+    public function courses(): HasMany
+    {
         return $this->hasMany(Course::class);
     }
 
@@ -227,6 +230,7 @@ class User extends Authenticatable implements HasMedia
     {
         return $query->where('user_type', UserTypeEnum::FACULTY_MEMBER());
     }
+
     public function scopeTeacher($query)
     {
         return $query->where('user_type', UserTypeEnum::TEACHER());

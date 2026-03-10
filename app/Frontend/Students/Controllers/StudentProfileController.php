@@ -56,8 +56,20 @@ class StudentProfileController extends BaseController
             'major', 'national_id', 'gender',
         ]));
 
-
         FlashMessage::success('Profile updated successfully');
+
+        return redirect()->back();
+    }
+
+    public function uploadAvatar(Request $request): RedirectResponse
+    {
+        $request->validate(['avatar' => 'required|image|max:2048']);
+
+        $request->user()
+            ->addMediaFromRequest('avatar')
+            ->toMediaCollection('avatar');
+
+        FlashMessage::success('Profile picture updated successfully');
 
         return redirect()->back();
     }
