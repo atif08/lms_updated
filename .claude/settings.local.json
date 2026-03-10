@@ -10,7 +10,11 @@
       "Bash(done)",
       "Bash(xargs cat:*)",
       "Bash(xargs ls:*)",
-      "mcp__laravel-boost__last-error"
+      "mcp__laravel-boost__last-error",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "mcp__laravel-boost__search-docs",
+      "Bash(npx vite:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
