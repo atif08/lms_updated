@@ -14,7 +14,6 @@ export default defineConfig({
         laravel({
             input: ['resources/css/spa.css', 'resources/js/app.jsx'],
             ssr: 'resources/js/ssr.jsx',
-            buildDirectory: 'react',
             refresh: true,
         }),
         react(),
