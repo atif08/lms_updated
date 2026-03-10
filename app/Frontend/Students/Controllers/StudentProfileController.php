@@ -9,69 +9,80 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class StudentProfileController extends BaseController
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
-
-        return view('frontend/students/student-profile');
+        return Inertia::render('Students/Profile');
     }
 
-    public function dashboard(Request $request): View
+    public function dashboard(Request $request): Response
     {
-        $calendar_events = CalendarEvent::where('is_active', 1)->get();
-        $latest_announcement = $request->user()->enrolled_courses()->active()->latest()->first();
+        $calendar_events = CalendarEvent::where('is_active', 1)->get()->map(fn ($e) => [
+            'id' => $e->id,
+            'title' => $e->title,
+            'description' => $e->description,
+            'url' => $e->url,
+            'start' => $e->start_datetime,
+            'end' => $e->end_datetime,
+        ]);
 
-        return view('frontend/students/student-dashboard', compact('calendar_events', 'latest_announcement'));
+        $latest_announcement = $request->user()
+            ->enrolled_courses()
+            ->active()
+            ->latest()
+            ->first()
+            ?->announcement;
+
+        return Inertia::render('Students/Dashboard', [
+            'calendar_events' => $calendar_events,
+            'latest_announcement' => $latest_announcement,
+        ]);
     }
 
-    public function getSettings(Request $request): View
+    public function getSettings(Request $request): Response
     {
-
-        return view('frontend/students/student-settings');
+        return Inertia::render('Students/Settings');
     }
 
     public function postSettings(Request $request): RedirectResponse
     {
+        $request->user()->update($request->only([
+            'first_name', 'last_name', 'name', 'mobile', 'country_code',
+            'qualification_name', 'institution', 'graduation_year',
+            'major', 'national_id', 'gender',
+        ]));
 
-        $request->user()->update($request->all());
-
-        $request->user()->syncFromMediaLibraryRequest($request->media)->toMediaCollection('default');
-
-        FlashMessage::success('Profile update successfully');
+        FlashMessage::success('Profile updated successfully');
 
         return redirect()->back();
     }
 
-    public function postChangePassword(Request $request)
+    public function getChangePassword(Request $request): Response
     {
+        return Inertia::render('Students/ChangePassword');
+    }
 
+    public function postChangePassword(Request $request): RedirectResponse
+    {
         $request->validate([
             'current_password' => 'required',
             'password' => 'required|min:8|confirmed',
         ]);
 
-        // Check if the current password matches the user's password
         if (! Hash::check($request->input('current_password'), Auth::user()->password)) {
             return back()->withErrors(['current_password' => 'Current password is incorrect'])->withInput();
         }
 
-        // Update the password
         Auth::user()->update([
             'password' => Hash::make($request->input('password')),
         ]);
 
-        // Redirect with a success message
         FlashMessage::success('Password changed successfully!');
 
         return redirect()->back();
-    }
-
-    public function getChangePassword(Request $request): View
-    {
-
-        return view('frontend/students/student-change-password');
     }
 }
