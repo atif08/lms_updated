@@ -3,9 +3,7 @@
 @section('title', __('Users'))
 
 @section('extra-buttons')
-    <a type="button" href="{{ route('users.get.details') }}" class="btn btn-primary float-end">
-        <i class="fa fa-plus"></i> | {{ __('Add User') }}
-    </a>
+
 @endsection
 
 @section('content')

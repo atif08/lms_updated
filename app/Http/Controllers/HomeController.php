@@ -8,8 +8,8 @@ class HomeController extends BaseController {
 
     public function getIndex(Request $request) {
         return match (true) {
-            $this->user->isAdmin() => redirect('dashboard'),
-            default => redirect('profile'),
+            $this->user->isAdmin() => redirect('admin/users'),
+            default => redirect('students/dashboard'),
         };
     }
 

@@ -10,24 +10,27 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 use Kris\LaravelFormBuilder\Form;
 use Kris\LaravelFormBuilder\FormBuilder;
 
 class StudentCalendarController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        $calendarEvents = CalendarEvent::where('is_active', 1)->get();
+        $calendar_events = CalendarEvent::where('is_active', 1)->get()->map(fn ($e) => [
+            'id' => $e->id,
+            'title' => $e->title,
+            'description' => $e->description,
+            'url' => $e->url,
+            'start' => $e->start_datetime,
+            'end' => $e->end_datetime,
+        ]);
 
-        return view('frontend/calender/index', ['calendarEvents' => $calendarEvents]);
+        return Inertia::render('Calendar/Index', compact('calendar_events'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(FormBuilder $formBuilder): View
     {
         $createForm = $this->_getForm($formBuilder);
@@ -40,9 +43,6 @@ class StudentCalendarController extends BaseController
         return CalendarEvent::find($id);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(FormBuilder $formBuilder, Request $request): RedirectResponse
     {
         $form = $this->_getForm($formBuilder);
@@ -53,9 +53,6 @@ class StudentCalendarController extends BaseController
         return redirect()->back();
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(CalendarEvent $calendarEvent, $id, FormBuilder $formBuilder): View
     {
         $calendarEvent = CalendarEvent::find($id);
@@ -64,9 +61,6 @@ class StudentCalendarController extends BaseController
         return $this->renderView('admin.calender.form_ajax', compact('createForm', 'calendarEvent'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(CalendarEvent $calendarEvent, $id, FormBuilder $formBuilder): RedirectResponse
     {
         $calendarEvent = CalendarEvent::find($id);
@@ -78,9 +72,6 @@ class StudentCalendarController extends BaseController
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id): JsonResponse
     {
         $calendarEvent = CalendarEvent::find($id);
@@ -91,8 +82,6 @@ class StudentCalendarController extends BaseController
 
     private function _getForm(FormBuilder $form_builder, $item = null): Form
     {
-        // $route=$item ? route('calendars.update', ['calendar' => $item->id]) : route('calendars.store');
-        // dd($route);
         return $form_builder->create(CalendarEventForm::class, [
             'method' => $item ? 'PUT' : 'POST',
             'url' => $item ? url('calendars', $item->id) : route('calendars.store'),

@@ -65,14 +65,22 @@ class User extends Authenticatable implements HasMedia
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
+        'mobile',
+        'country_code',
+        'gender',
         'email',
+        'institution',
+        'major',
+        'qualification_name',
         'email_verified_at',
         'password',
         'is_active',
         'user_type',
         'parent_id',
-        'seller_id',
-        'marketplace_id',
+        'graduation_year',
+        'national_id',
         'region_code',
         'delete_status',
         'last_activity_at',
@@ -103,6 +111,7 @@ class User extends Authenticatable implements HasMedia
     {
         $this->addMediaCollection('avatar')->singleFile();
     }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('preview')
@@ -149,7 +158,8 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsTo(Batch::class);
     }
 
-    public function courses(): HasMany{
+    public function courses(): HasMany
+    {
         return $this->hasMany(Course::class);
     }
 
@@ -220,6 +230,7 @@ class User extends Authenticatable implements HasMedia
     {
         return $query->where('user_type', UserTypeEnum::FACULTY_MEMBER());
     }
+
     public function scopeTeacher($query)
     {
         return $query->where('user_type', UserTypeEnum::TEACHER());

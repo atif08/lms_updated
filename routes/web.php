@@ -1,14 +1,5 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\General\GeneralController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ImportsController;
-use App\Http\Controllers\Settings\ConnectionsController;
-use App\Http\Controllers\Settings\ProfileController;
-use App\Admin\Users\Controllers\UsersController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use App\Admin\Assignments\Controllers\ApproveExtendAssignmentRequestController;
 use App\Admin\Assignments\Controllers\AssignmentController;
 use App\Admin\Assignments\Controllers\GenerateTeacherAssignmentReportController;
@@ -33,6 +24,7 @@ use App\Admin\Settings\Controllers\PermissionsController;
 use App\Admin\Settings\Controllers\RolesController;
 use App\Admin\SupportTicket\Controllers\SupportTicketController;
 use App\Admin\Users\Controllers\UserFullReportController;
+use App\Admin\Users\Controllers\UsersController;
 use App\Frontend\Assignments\Controllers\AssignmentController as FEAssignmentController;
 use App\Frontend\Assignments\Controllers\StoreStudentAssignmentController;
 use App\Frontend\Courses\Controllers\CourseAnswerController;
@@ -47,7 +39,13 @@ use App\Frontend\Students\Controllers\StudentProfileController;
 use App\Frontend\Students\Controllers\StudentQuizController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\LoginController;
-use Domain\Users\Models\User;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\General\GeneralController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImportsController;
+use App\Http\Controllers\Settings\ProfileController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -214,6 +212,7 @@ Route::middleware('auth.frontend')->group(function () {
     Route::get('students/profile', [StudentProfileController::class, 'index'])->name('students.get.profile');
     Route::get('students/settings', [StudentProfileController::class, 'getSettings'])->name('students.get.settings');
     Route::post('students/settings', [StudentProfileController::class, 'postSettings'])->name('students.post.settings');
+    Route::post('students/avatar', [StudentProfileController::class, 'uploadAvatar'])->name('students.post.avatar');
     Route::get('students/change-password', [StudentProfileController::class, 'getChangePassword'])->name('students.get.change-password');
     Route::post('students/change-password', [StudentProfileController::class, 'postChangePassword'])->name('students.post.change-password');
     Route::get('students/calendar', [StudentCalendarController::class, 'index'])->name('students.get.calendar');
@@ -242,7 +241,6 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'getIndex'])->name('get.index');
 });
 
-
 Route::prefix('imports')->name('imports.')->group(function () {
     Route::get('/', [ImportsController::class, 'getIndex'])->name('get.index');
     Route::post('/download', [ImportsController::class, 'getDownload'])->name('get.download');
@@ -250,5 +248,3 @@ Route::prefix('imports')->name('imports.')->group(function () {
     Route::post('/requests', [ImportsController::class, 'postRequests'])->name('post.requests');
     Route::post('/mappings', [ImportsController::class, 'postMappings'])->name('post.mappings');
 });
-
-

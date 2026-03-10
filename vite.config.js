@@ -1,27 +1,23 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import sass from 'sass';
-
-
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'resources/js'),
+        },
+    },
     plugins: [
-        // laravel({
-        //     input: [
-        //         'resources/sass/app.scss',
-        //         'resources/js/app.js',
-        //         'resources/scss/bootstrap.scss',
-        //         'resources/scss/icons.scss',
-        //         'resources/libs/jquery/jquery.min.js',
-        //         'resources/libs/bootstrap/js/bootstrap.min.js',
-        //         'resources/libs/metismenu/metisMenu.min.js',
-        //         'resources/libs/simplebar/simplebar.min.js',
-        //         // 'resources/libs/node-waves/node-waves.min.js',
-        //         // 'resources/libs/waypoints/waypoints.min.js',
-        //         // 'resources/libs/jquery-counterup/jquery-counterup.min.js',
-        //     ],
-        //     buildDirectory: 'bundle',
-        //     refresh: true,
-        // })
-    ]
+        laravel({
+            input: ['resources/css/spa.css', 'resources/js/app.jsx'],
+            ssr: 'resources/js/ssr.jsx',
+            buildDirectory: 'react',
+            refresh: true,
+        }),
+        react(),
+        tailwindcss(),
+    ],
 });

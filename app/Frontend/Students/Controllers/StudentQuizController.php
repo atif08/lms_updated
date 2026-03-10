@@ -3,59 +3,136 @@
 namespace App\Frontend\Students\Controllers;
 
 use App\Http\Controllers\BaseController;
-use App\Notifications\QuizResultStudentNotification;
 use App\Services\FlashMessage;
 use Domain\Courses\Models\Topic;
+use Domain\Quizzes\Enums\QuestionTypeEnum;
 use Domain\Quizzes\Models\Quiz;
 use Domain\Quizzes\Models\QuizAttempt;
 use Domain\Quizzes\Models\QuizAttemptAnswer;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class StudentQuizController extends BaseController
 {
-    public function getQuizAttempts(Request $request)
+    public function getQuizAttempts(Request $request): Response
     {
+        $quiz_attempts = $request->user()->quiz_attempts()->latest()->get()->map(fn ($a) => [
+            'id' => $a->id,
+            'quiz_name' => $a->quiz_name,
+            'topic_name' => $a->topic?->name,
+            'total_questions' => $a->total_questions,
+            'total_points' => $a->total_points,
+            'correct_answers' => $a->correct_answers,
+            'incorrect_answers' => $a->incorrect_answers,
+            'earned_points' => $a->earned_points,
+            'percentage' => get_points_percentage($a->total_points, $a->earned_points),
+            'date' => $a->created_at->format(config('constants.date_format')),
+        ]);
 
-        $quiz_attempts = $request->user()->quiz_attempts()->latest()->get();
-
-        return view('frontend/students/student-quiz', compact('quiz_attempts'));
+        return Inertia::render('Students/QuizAttempts', compact('quiz_attempts'));
     }
 
-    public function show($topic_id, $id, Request $request)
+    public function show($topic_id, $id, Request $request): Response
     {
-
         $topic = Topic::find($topic_id) ?? new Topic;
         $quiz = Quiz::with('quiz_sections.questions.options')->findOrFail($id);
-        $isPreview = $request->query('preview', false);
 
-        return view('frontend/quizzes/form', compact('quiz', 'isPreview', 'topic'));
+        $quiz_data = [
+            'id' => $quiz->id,
+            'name' => $quiz->name,
+            'total_questions' => $quiz->quiz_questions()->count(),
+            'sections' => $quiz->quiz_sections->map(fn ($section) => [
+                'id' => $section->id,
+                'title' => $section->title,
+                'description' => $section->description,
+                'questions' => $section->questions->map(fn ($q) => [
+                    'id' => $q->id,
+                    'name' => $q->name,
+                    'type' => $q->type,
+                    'points' => $q->points,
+                    'options' => $q->options->map(fn ($o) => [
+                        'id' => $o->id,
+                        'name' => $o->name,
+                        'answer' => $o->answer,
+                    ]),
+                ]),
+            ]),
+        ];
+
+        return Inertia::render('Quizzes/TakeQuiz', [
+            'quiz' => $quiz_data,
+            'topic' => ['id' => $topic->id, 'name' => $topic->name],
+        ]);
     }
 
-    public function quizResult(QuizAttempt $quiz_attempt)
+    public function quizResult(QuizAttempt $quiz_attempt): Response
     {
-        $quiz_attempt_answers = collect($quiz_attempt->answers);
-        $user = Auth::user();
-        //        return view('frontend/quizzes/quiz-result', compact('quiz_result'));
+        $quiz_attempt->load('quiz.quiz_sections.questions.options', 'answers');
+        $answers = collect($quiz_attempt->answers);
 
-        return view('frontend/quizzes/quiz-result', compact('quiz_attempt', 'quiz_attempt_answers', 'user'));
+        $sections = $quiz_attempt->quiz->quiz_sections->map(fn ($section) => [
+            'id' => $section->id,
+            'title' => $section->title,
+            'description' => $section->description,
+            'questions' => $section->questions->map(function ($q) use ($answers) {
+                $submitted = $answers->where('quiz_question_id', $q->id)->values();
+
+                $is_correct = match ($q->type) {
+                    QuestionTypeEnum::ONE_CORRECT()->value,
+                    QuestionTypeEnum::MULTIPLE_CORRECT()->value => $q->isCorrect($submitted->pluck('question_option_id')->toArray()),
+                    default => $q->isCorrect($submitted->pluck('answer_text')->toArray()),
+                };
+
+                return [
+                    'id' => $q->id,
+                    'name' => $q->name,
+                    'type' => $q->type,
+                    'points' => $q->points,
+                    'is_correct' => $is_correct,
+                    'options' => $q->options->map(fn ($o) => [
+                        'id' => $o->id,
+                        'name' => $o->name,
+                        'answer' => $o->answer,
+                        'is_correct' => $o->is_correct,
+                        'submitted' => $submitted->contains('question_option_id', $o->id),
+                        'answer_text' => $submitted->where('question_option_id', $o->id)->first()?->answer_text,
+                    ]),
+                    'submitted_answers' => $submitted->map(fn ($a) => [
+                        'question_option_id' => $a->question_option_id,
+                        'answer_text' => $a->answer_text,
+                    ]),
+                ];
+            }),
+        ]);
+
+        $attempt = [
+            'id' => $quiz_attempt->id,
+            'quiz_name' => $quiz_attempt->quiz->name,
+            'participant_name' => $quiz_attempt->participant->name,
+            'participant_email' => $quiz_attempt->participant->email,
+            'correct_answers' => $quiz_attempt->correct_answers,
+            'incorrect_answers' => $quiz_attempt->incorrect_answers,
+            'total_questions' => $quiz_attempt->total_questions,
+            'total_points' => $quiz_attempt->total_points,
+            'earned_points' => $quiz_attempt->earned_points,
+            'percentage' => get_points_percentage($quiz_attempt->total_points, $quiz_attempt->earned_points),
+            'sections' => $sections,
+        ];
+
+        return Inertia::render('Quizzes/Result', ['attempt' => $attempt]);
     }
 
     public function submit(Request $request)
     {
-        //        dd($request->all());
-
         $request->validate([
             'quiz_id' => 'required|exists:quizzes,id',
             'topic_id' => 'required|exists:topics,id',
-            //            'answers'  => 'required|array',
         ]);
 
         $user = $request->user();
         $quiz = Quiz::query()->with('quiz_questions.options')->findOrFail($request->get('quiz_id'));
 
-        // Create quiz attempt
         $quiz_attempt = $user->quiz_attempts()->create([
             'quiz_name' => $quiz->name,
             'total_questions' => $quiz->quiz_questions()->count(),
@@ -68,18 +145,12 @@ class StudentQuizController extends BaseController
                 ->count() + 1),
         ]);
 
-        // Handle single-answer questions
         foreach ($request->get('answers', []) as $questionId => $optionId) {
             $question = $quiz->quiz_questions->firstWhere('id', $questionId);
-            // Increment correct/incorrect answers and points
-            if ($question->isCorrect([$optionId])) {
-                $quiz_attempt->increment('correct_answers');
-                $quiz_attempt->increment('earned_points', $question->points);
-            } else {
-                $quiz_attempt->increment('incorrect_answers');
-            }
+            $question->isCorrect([$optionId])
+                ? $quiz_attempt->increment('correct_answers') && $quiz_attempt->increment('earned_points', $question->points)
+                : $quiz_attempt->increment('incorrect_answers');
 
-            // Record each answer
             QuizAttemptAnswer::query()->create([
                 'quiz_attempt_id' => $quiz_attempt->id,
                 'quiz_question_id' => $questionId,
@@ -87,19 +158,12 @@ class StudentQuizController extends BaseController
             ]);
         }
 
-        // Handle multi-select questions
         foreach ($request->get('multi_answers', []) as $questionId => $selectedOptions) {
             $question = $quiz->quiz_questions->firstWhere('id', $questionId);
+            $question->isCorrect($selectedOptions)
+                ? $quiz_attempt->increment('correct_answers') && $quiz_attempt->increment('earned_points', $question->points)
+                : $quiz_attempt->increment('incorrect_answers');
 
-            // Compare selected options with correct options
-            if ($question->isCorrect($selectedOptions)) {
-                $quiz_attempt->increment('correct_answers');
-                $quiz_attempt->increment('earned_points', $question->points);
-            } else {
-                $quiz_attempt->increment('incorrect_answers');
-            }
-
-            // Record each selected option
             foreach ($selectedOptions as $optionId) {
                 QuizAttemptAnswer::create([
                     'quiz_attempt_id' => $quiz_attempt->id,
@@ -111,16 +175,10 @@ class StudentQuizController extends BaseController
 
         foreach ($request->get('matching_answers', []) as $questionId => $selectedOptions) {
             $question = $quiz->quiz_questions->firstWhere('id', $questionId);
+            $question->options->pluck('answer')->toArray() == $selectedOptions
+                ? $quiz_attempt->increment('correct_answers') && $quiz_attempt->increment('earned_points', $question->points)
+                : $quiz_attempt->increment('incorrect_answers');
 
-            // Compare selected options with correct options
-            if ($question->options->pluck('answer')->toArray() == $selectedOptions) {
-                $quiz_attempt->increment('correct_answers');
-                $quiz_attempt->increment('earned_points', $question->points);
-            } else {
-                $quiz_attempt->increment('incorrect_answers');
-            }
-
-            // Record each selected option
             foreach ($selectedOptions as $answer) {
                 QuizAttemptAnswer::create([
                     'quiz_attempt_id' => $quiz_attempt->id,
@@ -133,14 +191,10 @@ class StudentQuizController extends BaseController
 
         foreach ($request->get('fill_blank', []) as $questionId => $submited_blanks) {
             $question = $quiz->quiz_questions->firstWhere('id', $questionId);
-            // Compare selected options with correct options
-            if ($question->isCorrect($submited_blanks)) {
-                $quiz_attempt->increment('correct_answers');
-                $quiz_attempt->increment('earned_points', $question->points);
-            } else {
-                $quiz_attempt->increment('incorrect_answers');
-            }
-            // Record each selected option
+            $question->isCorrect($submited_blanks)
+                ? $quiz_attempt->increment('correct_answers') && $quiz_attempt->increment('earned_points', $question->points)
+                : $quiz_attempt->increment('incorrect_answers');
+
             foreach ($submited_blanks as $key => $blank_text) {
                 QuizAttemptAnswer::query()->create([
                     'quiz_attempt_id' => $quiz_attempt->id,
@@ -151,7 +205,6 @@ class StudentQuizController extends BaseController
             }
         }
 
-        // Handle free-text answers
         foreach ($request->get('free_text', []) as $questionId => $answer) {
             QuizAttemptAnswer::query()->create([
                 'quiz_attempt_id' => $quiz_attempt->id,
@@ -159,9 +212,6 @@ class StudentQuizController extends BaseController
                 'quiz_question_id' => $questionId,
             ]);
         }
-
-        // Notify user of quiz submission
-        // $user->notify(new QuizResultStudentNotification($quizAttempt));
 
         FlashMessage::success('Quiz submitted successfully');
 
