@@ -31,8 +31,9 @@ class LoginController extends BaseController
         (new CheckInAction)->handle($user);
 
         return match ($user->user_type) {
-            UserTypeEnum::ADMIN()->value => redirect()->intended('/admin/users'),
-            UserTypeEnum::FACULTY_MEMBER()->value => redirect()->intended('/admin/courses'),
+            UserTypeEnum::ADMIN()->value => Inertia::location(url('/admin/users')),
+            UserTypeEnum::FACULTY_MEMBER()->value => Inertia::location(url('/admin/courses')),
+            UserTypeEnum::TEACHER()->value => Inertia::location(url('/admin/courses')),
             UserTypeEnum::STANDARD_STUDENT()->value,
             UserTypeEnum::ACCELERATED_STUDENT()->value => redirect()->intended('/students/dashboard'),
             default => tap(null, fn () => $this->guard()->logout()) ?: redirect('/login')->withErrors('Unauthorized access for this user type.'),

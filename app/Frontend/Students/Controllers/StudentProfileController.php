@@ -56,6 +56,7 @@ class StudentProfileController extends BaseController
             'major', 'national_id', 'gender',
         ]));
 
+
         FlashMessage::success('Profile updated successfully');
 
         return redirect()->back();
