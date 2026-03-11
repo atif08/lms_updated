@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\ImportRequest;
 use App\Models\Product;
-use App\Observers\ImportRequestObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,7 +24,6 @@ class EventServiceProvider extends ServiceProvider {
      * Register any events for your application.
      */
     public function boot(): void {
-        ImportRequest::observe(ImportRequestObserver::class);
     }
 
     /**
