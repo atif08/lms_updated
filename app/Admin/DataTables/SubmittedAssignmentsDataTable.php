@@ -31,7 +31,7 @@ class SubmittedAssignmentsDataTable extends BaseDataTable
             'm.file_name',
             'm.disk',
             DB::raw('m.id AS media_id'),
-            DB::raw('count(sa.id) AS total_submissions'),
+            DB::raw('(SELECT COUNT(*) FROM submitted_assignments s2 WHERE s2.user_id = sa.user_id AND s2.submissionable_id = sa.submissionable_id AND s2.submissionable_type = sa.submissionable_type AND s2.deleted_at IS NULL) AS total_submissions'),
             'sa.description',
             'sa.comments',
             'sa.score',
@@ -61,7 +61,8 @@ class SubmittedAssignmentsDataTable extends BaseDataTable
                 $join->on('m.model_id', '=', 'sa.id')
                     ->where('m.model_type', '=', SubmittedAssignment::class);
             })->whereNull('u.deleted_at')
-            ->groupBy('u.id', 't.id');
+            ->whereNull('sa.deleted_at')
+            ->groupBy('sa.id');
 
         return $query;
     }
@@ -186,8 +187,8 @@ class SubmittedAssignmentsDataTable extends BaseDataTable
                 'raw' => true,
                 'content' => function ($row) {
                     $actions = [
-                        //                        '<a class="btn btn-primary btn-sm edit-assignment-btn" data-bs-toggle="modal" data-bs-target="#editAssignmentModal" data-url="' . route('submitted-assignments.edit', $row->id) . '"><i class="fas fa-edit"></i> </a>',
-                        //                        '<a class="btn btn-warning btn-sm" href="' . route('submitted-assignments.detail', ['student' => $row->user_id, 'topic' => $row->topic_id]) . '"><i class="fas fa-database"></i> </a>',
+                        '<a class="btn btn-primary btn-sm edit-assignment-btn" data-bs-toggle="modal" data-bs-target="#editAssignmentModal" data-url="'.route('submitted-assignments.edit', $row->id).'"><i class="fas fa-edit"></i> </a>',
+                        //                                                '<a class="btn btn-warning btn-sm" href="' . route('submitted-assignments.detail', ['student' => $row->user_id, 'topic' => $row->topic_id]) . '"><i class="fas fa-database"></i> </a>',
                     ];
 
                     return implode(' ', $actions);

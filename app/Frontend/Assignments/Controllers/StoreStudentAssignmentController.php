@@ -7,6 +7,7 @@ use App\Services\FlashMessage;
 use Domain\Assignment\Actions\CreateAssignmentSubmissionAction;
 use Domain\Assignment\Actions\HandleAssignmentFileUploadAction;
 use Domain\Assignment\Actions\NotifyAssignmentUsersAction;
+use Domain\Assignment\Models\Assignment;
 use Illuminate\Http\Request;
 
 class StoreStudentAssignmentController extends BaseController
@@ -15,6 +16,12 @@ class StoreStudentAssignmentController extends BaseController
     {
         $request->validate([
             'media' => 'required|file',
+            'assignment_id' => 'required|exists:assignments,id',
+        ]);
+
+        $request->merge([
+            'submissionable_id' => $request->assignment_id,
+            'submissionable_type' => Assignment::class,
         ]);
 
         $submission = app(CreateAssignmentSubmissionAction::class)

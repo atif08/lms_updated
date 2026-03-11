@@ -61,12 +61,21 @@
         const $wrapper = $('#due-dates-wrapper');
 
         function initializeSelect2($element) {
+            const $modal = $element.closest('.modal');
             $element.select2({
                 placeholder: 'Select User(s)',
                 allowClear: true,
-                data: studentOptions,
-                width: '100%'
+                width: '100%',
+                dropdownParent: $modal.length ? $modal : $(document.body)
             });
+        }
+
+        function buildOptionsHtml(selectedIds) {
+            selectedIds = selectedIds || [];
+            return studentOptions.map(function(u) {
+                const selected = selectedIds.indexOf(u.id) !== -1 ? ' selected' : '';
+                return '<option value="' + u.id + '"' + selected + '>' + u.text + '</option>';
+            }).join('');
         }
 
         function createNewRow() {
@@ -74,7 +83,9 @@
             const newRowHtml = `
             <div class="row mb-2 align-items-center dynamic-row-${uniqueId}">
                 <div class="col-md-8">
-                    <select name="students[${uniqueId}][student_ids][]" class="form-control select2-students" multiple></select>
+                    <select name="students[${uniqueId}][student_ids][]" class="form-control select2-students" multiple>
+                        ${buildOptionsHtml()}
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <input type="date" name="students[${uniqueId}][due_date]" class="form-control">

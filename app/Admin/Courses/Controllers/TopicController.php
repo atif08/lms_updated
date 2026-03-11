@@ -139,10 +139,10 @@ class TopicController extends BaseController
     {
 
         if ($topicable->topicable instanceof Lesson) {
-
             $topicable->topicable->clearMediaCollection(MediaCollectionEnum::IMAGES());
             $topicable->topicable->delete();
         }
+
         $topicable->delete();
 
         return response()->json(['message' => 'item deleted successfully', 'item' => $topicable]);
