@@ -62,7 +62,7 @@ function CourseCard({ course }) {
                 src={course.image}
                 alt={course.name}
                 className="h-20 w-28 rounded-xl object-cover shrink-0 bg-gray-100"
-                onError={e => { e.target.src = '/frontend/img/placeholder.jpg'; }}
+                onError={e => { e.target.onerror = null; e.target.src = '/frontend/img/course-01.png'; }}
             />
             <div className="flex-1 min-w-0">
                 <h3 className="text-base font-semibold text-gray-800 truncate">{course.name}</h3>
