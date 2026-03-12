@@ -37,6 +37,7 @@
         "staudenmeir/belongs-to-through": "^2.14",
         "stechstudio/backoff": "^1.2",
         "tightenco/ziggy": "^2.6",
+        "vimeo/laravel": "^5.10",
         "yajra/laravel-datatables": "^12.0"
     },
     "require-dev": {

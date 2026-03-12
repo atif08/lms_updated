@@ -21,7 +21,8 @@
       "Bash(grep:*)",
       "Bash(do echo:*)",
       "mcp__laravel-boost__list-routes",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(composer require:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

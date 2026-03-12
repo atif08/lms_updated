@@ -32,19 +32,21 @@ const ZOOM_MAX  = 4;
 
 export default function PdfAnnotationViewer({ url, mediaId }) {
     const wrapperRef    = useRef(null);
-    const scrollAreaRef = useRef(null); // the overflow-auto scroll area
-    const containerRef  = useRef(null); // position:relative inline-block
+    const scrollAreaRef = useRef(null);
+    const containerRef  = useRef(null);
     const canvasRef     = useRef(null);
-    const tlRef         = useRef(null); // text layer div
+    const tlRef         = useRef(null);
     const pdfDocRef     = useRef(null);
     const saveTimer     = useRef(null);
-    const toolbarRef    = useRef(null); // always-fresh toolbar value
-
-    const zoomRef = useRef(1);
+    const toolbarRef    = useRef(null);
+    const zoomRef       = useRef(1);
 
     const [pageNum, setPageNum]           = useState(1);
     const [pageCount, setPageCount]       = useState(0);
     const [zoom, _setZoom]                = useState(1);
+    // canvasPx tracks the rendered canvas CSS pixel size — used to position
+    // annotations in px rather than %, so they stay correct across zoom changes.
+    const [canvasPx, setCanvasPx]         = useState({ w: 0, h: 0 });
     const [loading, setLoading]           = useState(true);
     const [annotations, setAnnotations]   = useState([]);
     const [saving, setSaving]             = useState(false);
@@ -53,7 +55,7 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
     const [annoType, setAnnoType]         = useState('highlight');
     const [comment, setComment]           = useState('');
 
-    const setZoom  = (v) => { zoomRef.current = v; _setZoom(v); };
+    const setZoom    = (v) => { zoomRef.current = v; _setZoom(v); };
     const setToolbar = (v) => { toolbarRef.current = v; _setToolbar(v); };
 
     // ── PDF.js ────────────────────────────────────────────────────────────────
@@ -72,15 +74,16 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
         return lib;
     }, []);
 
+    // Returns { w, h } — the canvas CSS pixel dimensions after rendering
     const renderPage = useCallback(async (doc, num, zoomLevel) => {
-        const page    = await doc.getPage(num);
-        const vp0     = page.getViewport({ scale: 1 });
-        const baseW   = scrollAreaRef.current?.clientWidth || 800;
-        const scale   = (baseW / vp0.width) * (zoomLevel ?? zoomRef.current);
-        const vp      = page.getViewport({ scale });
+        const page  = await doc.getPage(num);
+        const vp0   = page.getViewport({ scale: 1 });
+        const baseW = scrollAreaRef.current?.clientWidth || 800;
+        const scale = (baseW / vp0.width) * (zoomLevel ?? zoomRef.current);
+        const vp    = page.getViewport({ scale });
 
         const canvas = canvasRef.current;
-        if (!canvas) return;
+        if (!canvas) return { w: 0, h: 0 };
         canvas.width  = vp.width;
         canvas.height = vp.height;
         await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
@@ -97,6 +100,10 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
                 textDivs:    [],
             });
         }
+
+        // vp.width / vp.height are the canvas CSS pixel dimensions (no devicePixelRatio
+        // scaling in our setup), so we return them directly for annotation positioning.
+        return { w: vp.width, h: vp.height };
     }, []);
 
     // ── Load PDF on url change ────────────────────────────────────────────────
@@ -115,8 +122,11 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
             if (cancelled) return;
             pdfDocRef.current = doc;
             setPageCount(doc.numPages);
-            await renderPage(doc, 1, zoomRef.current);
-            if (!cancelled) setLoading(false);
+            const px = await renderPage(doc, 1, zoomRef.current);
+            if (!cancelled) {
+                setCanvasPx(px);
+                setLoading(false);
+            }
         })().catch(() => setLoading(false));
 
         return () => { cancelled = true; };
@@ -128,17 +138,20 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
         setLoading(true);
         setToolbar(null);
         setPageNum(num);
-        await renderPage(pdfDocRef.current, num, zoomRef.current);
+        const px = await renderPage(pdfDocRef.current, num, zoomRef.current);
+        setCanvasPx(px);
         setLoading(false);
     };
 
     const changeZoom = async (delta) => {
         if (!pdfDocRef.current || loading) return;
-        const next = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, parseFloat((zoomRef.current + delta).toFixed(2))));
+        const next = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN,
+            parseFloat((zoomRef.current + delta).toFixed(2))));
         setZoom(next);
         setLoading(true);
         setToolbar(null);
-        await renderPage(pdfDocRef.current, pageNum, next);
+        const px = await renderPage(pdfDocRef.current, pageNum, next);
+        setCanvasPx(px);
         setLoading(false);
     };
 
@@ -167,7 +180,6 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
 
     // ── Text selection → show toolbar ────────────────────────────────────────
     const handleMouseUp = useCallback((e) => {
-        // Ignore clicks that originated inside the annotation popup
         if (e.target.closest?.('[data-ann-popup]')) return;
 
         const sel = window.getSelection();
@@ -179,8 +191,11 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
         }
 
         if (!canvasRef.current || !containerRef.current) return;
-        // Use containerRef for rect origin — annotations are % of the container, not the canvas
-        const cr = containerRef.current.getBoundingClientRect();
+
+        // Use the canvas bounding rect as the coordinate origin.
+        // Annotations are stored as fractions (0–100) of the canvas CSS dimensions,
+        // then rendered back as explicit px — so they are zoom-independent.
+        const cr = canvasRef.current.getBoundingClientRect();
         const cw = cr.width;
         const ch = cr.height;
 
@@ -202,7 +217,7 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
 
     // ── Save annotation ───────────────────────────────────────────────────────
     const saveAnnotation = () => {
-        const t = toolbarRef.current;  // always fresh via ref
+        const t = toolbarRef.current;
         if (!t) return;
         const ann = { id: nextId(), page: pageNum, rects: t.rects, type: annoType, comment };
         setAnnotations(prev => { const u = [...prev, ann]; persist(u); return u; });
@@ -307,8 +322,9 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
                     {/* Text layer — transparent, enables text selection */}
                     <div ref={tlRef} className="pdf-tl" />
 
-                    {/* Saved annotation overlays */}
-                    {pageAnnotations.map(ann =>
+                    {/* Saved annotation overlays — rendered in px from canvasPx so
+                        positions stay correct when zoom changes */}
+                    {canvasPx.w > 0 && pageAnnotations.map(ann =>
                         ann.rects.map((rect, ri) => (
                             <AnnotationRect
                                 key={`${ann.id}-${ri}`}
@@ -316,6 +332,7 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
                                 ann={ann}
                                 first={ri === 0}
                                 onDelete={deleteAnnotation}
+                                canvasPx={canvasPx}
                             />
                         ))
                     )}
@@ -330,7 +347,7 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
                             setComment={setComment}
                             onSave={saveAnnotation}
                             onCancel={() => { setToolbar(null); window.getSelection()?.removeAllRanges(); }}
-                            canvasWidth={canvasRef.current?.getBoundingClientRect().width ?? 800}
+                            canvasWidth={canvasPx.w}
                         />
                     )}
                 </div>
@@ -341,23 +358,28 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
 
 // ── Annotation overlay ─────────────────────────────────────────────────────────
 
-function AnnotationRect({ rect, ann, first, onDelete }) {
+function AnnotationRect({ rect, ann, first, onDelete, canvasPx }) {
     const [tip, setTip] = useState(false);
     const t = TYPES[ann.type] ?? TYPES.highlight;
+
+    // Convert stored % fractions back to explicit px using the current canvas size.
+    // This keeps annotations in the correct position regardless of zoom level.
+    const style = {
+        position: 'absolute',
+        left:   `${(rect.x / 100) * canvasPx.w}px`,
+        top:    `${(rect.y / 100) * canvasPx.h}px`,
+        width:  `${(rect.w / 100) * canvasPx.w}px`,
+        height: `${(rect.h / 100) * canvasPx.h}px`,
+        background:   t.bg,
+        borderBottom: t.border,
+        zIndex: 5,
+        pointerEvents: first ? 'auto' : 'none',
+        cursor: first ? 'pointer' : 'default',
+    };
+
     return (
         <div
-            style={{
-                position: 'absolute',
-                left:   `${rect.x}%`,
-                top:    `${rect.y}%`,
-                width:  `${rect.w}%`,
-                height: `${rect.h}%`,
-                background:   t.bg,
-                borderBottom: t.border,
-                zIndex: 5,
-                pointerEvents: first ? 'auto' : 'none',
-                cursor: first ? 'pointer' : 'default',
-            }}
+            style={style}
             onMouseEnter={() => first && setTip(true)}
             onMouseLeave={() => setTip(false)}
         >
