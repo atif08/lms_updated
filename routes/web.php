@@ -43,7 +43,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\General\GeneralController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ImportsController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +59,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes();
+
+Route::get('forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm']);
 
 Route::mediaLibrary();
 
@@ -242,12 +243,4 @@ Route::get('/', [HomeController::class, 'getIndex'])->name('home');
 
 Route::prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'getIndex'])->name('get.index');
-});
-
-Route::prefix('imports')->name('imports.')->group(function () {
-    Route::get('/', [ImportsController::class, 'getIndex'])->name('get.index');
-    Route::post('/download', [ImportsController::class, 'getDownload'])->name('get.download');
-    Route::get('/requests', [ImportsController::class, 'getRequests'])->name('get.requests');
-    Route::post('/requests', [ImportsController::class, 'postRequests'])->name('post.requests');
-    Route::post('/mappings', [ImportsController::class, 'postMappings'])->name('post.mappings');
 });

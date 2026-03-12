@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, Link } from '@inertiajs/react';
 import AuthLayout from '@/Layouts/AuthLayout';
 
 export default function Login() {
@@ -63,12 +63,12 @@ export default function Login() {
                         />
                         Remember me
                     </label>
-                    <a
+                    <Link
                         href="/forgot-password"
                         className="text-sm text-indigo-600 hover:text-indigo-800"
                     >
                         Forgot Password?
-                    </a>
+                    </Link>
                 </div>
 
                 <button

@@ -29,7 +29,6 @@
 <script src="{{ URL::asset('js/app.js')}}"></script>
 
 <script src="{{ URL::asset('js/pages/datatables.init.js?v=1') }}"></script>
-<script src="{{ URL::asset('js/pages/import-wizard.init.js') }}"></script>
 
 <script type="text/javascript">
     $.ajaxSetup({
@@ -43,7 +42,6 @@
 @include('scripts.menus')
 @include('scripts.date-range')
 @include('scripts.marketplaces')
-@include('scripts.import')
 @include('scripts.filters')
 @include('scripts.custom')
 
