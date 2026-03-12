@@ -248,7 +248,22 @@ Route::middleware('auth.frontend')->group(function () {
 });
 
 Route::get('/home', [HomeController::class, 'getIndex']);
-Route::get('/', [HomeController::class, 'getIndex'])->name('home');
+
+Route::get('/', function () {
+    if (config('app.marketplace_enabled')) {
+        return app(\App\Http\Controllers\HomeController::class)->getIndex();
+    }
+    return redirect()->route('admin.get.login');
+})->name('home');
+
+if (config('app.marketplace_enabled')) {
+    // Marketplace public routes — copy your blade controllers here
+    // Example:
+    // Route::get('courses', [\App\Marketplace\Controllers\CourseListingController::class, 'index'])->name('marketplace.courses');
+    // Route::get('courses/{course:slug}', [\App\Marketplace\Controllers\CourseDetailController::class, 'show'])->name('marketplace.courses.detail');
+    // Route::get('register', [\App\Marketplace\Controllers\RegisterController::class, 'show'])->name('register');
+    // Route::post('register', [\App\Marketplace\Controllers\RegisterController::class, 'store']);
+}
 
 Route::prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'getIndex'])->name('get.index');

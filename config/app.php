@@ -61,6 +61,8 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
+    'marketplace_enabled' => (bool) env('MARKETPLACE_ENABLED', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
