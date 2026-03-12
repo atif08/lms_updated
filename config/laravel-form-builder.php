@@ -68,6 +68,8 @@ return [
         'multi_select_dropdown' => \App\Forms\Fields\MultiSelectDropdownField::class,
         'ck_editor' => \App\Forms\Fields\CkEditorField::class,
         'custom_due_date' => \App\Forms\Fields\CustomDueDateField::class,
+        'vimeo_uploader' => \App\Admin\Forms\Fields\VimeoUploaderField::class,
+
 
     ],
 

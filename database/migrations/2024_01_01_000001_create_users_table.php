@@ -12,8 +12,21 @@ return new class extends Migration {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('batch_id')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('name')->nullable();
-            $table->string('email')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('national_id')->nullable();
+            $table->string('address')->nullable();
+            $table->string('permanent_address')->nullable();
+            $table->string('email')->unique();
+            $table->string('country_code')->nullable();
+            $table->string('mobile')->nullable();
+            $table->string('qualification_name')->nullable();
+            $table->string('institution')->nullable();
+            $table->string('graduation_year')->nullable();
+            $table->string('major')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->rememberToken();
@@ -24,9 +37,6 @@ return new class extends Migration {
             $table->foreignId('parent_id')->nullable()
                 ->constrained('users')
                 ->cascadeOnDelete();
-
-
-            $table->string('region_code', 2)->nullable();
 
             $table->timestamp('last_activity_at')->nullable();
 

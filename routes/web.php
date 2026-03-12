@@ -14,6 +14,7 @@ use App\Admin\Courses\Controllers\CourseProgressReportController;
 use App\Admin\Courses\Controllers\CoursesController;
 use App\Admin\Courses\Controllers\LessonController;
 use App\Admin\Courses\Controllers\TopicController;
+use App\Admin\Courses\Controllers\VimeoUploadController;
 use App\Admin\FileLibrary\Controllers\FileLibraryController;
 use App\Admin\Quizzes\Controllers\QuestionController;
 use App\Admin\Quizzes\Controllers\QuizAttemptController;
@@ -100,6 +101,14 @@ Route::prefix('admin')->group(function () {
                     Route::post('/store', [LessonController::class, 'store'])->name('store');
                     Route::put('{lesson}/update', [LessonController::class, 'update'])->name('update');
                     Route::get('{lesson}/destroy', [LessonController::class, 'destroy'])->name('destroy');
+                    // Vimeo direct upload endpoints
+                    Route::post('/{lesson}/vimeo/init', [VimeoUploadController::class, 'initTus'])->name('vimeo.init');
+                    Route::post('/{lesson}/vimeo/complete', [VimeoUploadController::class, 'completeTus'])->name('vimeo.complete');
+                    Route::post('/{lesson}/vimeo/update', [VimeoUploadController::class, 'updateSettings'])->name('vimeo.update');
+                    Route::post('/{lesson}/vimeo/update-title', [VimeoUploadController::class, 'updateTitle'])->name('vimeo.update-title');
+                    Route::post('/{lesson}/vimeo/replace', [VimeoUploadController::class, 'replaceComplete'])->name('vimeo.replace');
+                    Route::post('/{lesson}/vimeo/reorder', [VimeoUploadController::class, 'reorder'])->name('vimeo.reorder');
+                    Route::delete('/{lesson}/vimeo', [VimeoUploadController::class, 'destroy'])->name('vimeo.destroy');
                 });
             });
             Route::get('progress', [CourseProgressReportController::class, 'index'])->name('get.progress');

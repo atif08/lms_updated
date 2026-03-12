@@ -69,6 +69,12 @@ class LessonForm extends BaseForm
                 'rules' => ['sometimes', Rule::in(['1'])],
                 'checked' => ($lesson ? $lesson->is_fast_track : true),
             ])
+            ->add('vimeo_upload', 'vimeo_uploader', [
+                'item' => $lesson ?? new Lesson(),
+                'course' => $this->getData('course'),
+                'topic' => $this->getData('topic'),
+                'wrapper' => ['class' => 'vimeo_upload_wrapper'],
+            ])
             ->add('submit', Field::BUTTON_SUBMIT, [
                 'label' => '<span class="fa fa-save"></span> '.__($lesson ? 'Save' : 'Save'),
                 'wrapper' => ['class' => 'form-group mt-2 mb-2'],

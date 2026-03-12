@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->unique(['user_id', 'media_id']);
             $table->index('media_id');
+
         });
     }
 
