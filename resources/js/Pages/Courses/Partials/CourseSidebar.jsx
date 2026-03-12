@@ -49,7 +49,7 @@ export default function CourseSidebar({ topics, progressMap, openTopics, toggleT
                                                         />
                                                         <span
                                                             className="text-xs text-gray-700 flex-1 group-hover:text-indigo-600 transition-colors"
-                                                            onClick={() => loadContent(m.url, m.media_type, item.description)}
+                                                            onClick={() => loadContent(m.url, m.media_type, item.description, m.id)}
                                                         >
                                                             <MediaIcon type={m.media_type} /> {m.name}
                                                         </span>

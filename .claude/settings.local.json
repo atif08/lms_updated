@@ -15,7 +15,9 @@
       "Bash(npm run:*)",
       "mcp__laravel-boost__search-docs",
       "Bash(npx vite:*)",
-      "mcp__laravel-boost__tinker"
+      "mcp__laravel-boost__tinker",
+      "Bash(node:*)",
+      "Bash(python3:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

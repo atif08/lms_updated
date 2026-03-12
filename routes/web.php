@@ -31,6 +31,7 @@ use App\Frontend\Courses\Controllers\CourseAnswerController;
 use App\Frontend\Courses\Controllers\CourseController;
 use App\Frontend\Courses\Controllers\CourseProgressController;
 use App\Frontend\Courses\Controllers\CourseQuestionController;
+use App\Frontend\Courses\Controllers\PdfAnnotationController;
 use App\Frontend\Students\Controllers\AttendanceController;
 use App\Frontend\Students\Controllers\EnrolledCoursesIndexController;
 use App\Frontend\Students\Controllers\EnrollmentController;
@@ -204,6 +205,8 @@ Route::middleware('auth.frontend')->group(function () {
     Route::get('courses/{course:slug}', CourseController::class)->name('courses.get.details');
     Route::get('courses/{course}/users/{user}/enroll', EnrollmentController::class)->name('courses.user.enroll');
     Route::post('questions/{question}/answer', CourseAnswerController::class)->name('question.post.answer');
+    Route::get('pdf-annotations/{mediaId}', [PdfAnnotationController::class, 'show'])->name('pdf-annotations.show');
+    Route::post('pdf-annotations/{mediaId}', [PdfAnnotationController::class, 'upsert'])->name('pdf-annotations.upsert');
 
     Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.get');
     Route::post('attendance/hours', [AttendanceController::class, 'saveHours'])->name('attendance.post.hours');

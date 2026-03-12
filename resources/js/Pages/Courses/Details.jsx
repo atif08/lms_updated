@@ -27,8 +27,8 @@ export default function Details({ course, topics, assignments, course_progress }
         return map;
     });
 
-    const loadContent = (url, mediaType, description = '') => {
-        setActiveContent({ url, mediaType, description });
+    const loadContent = (url, mediaType, description = '', mediaId = null) => {
+        setActiveContent({ url, mediaType, description, mediaId });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
