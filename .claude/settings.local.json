@@ -24,7 +24,9 @@
       "Bash(git checkout:*)",
       "Bash(composer require:*)",
       "mcp__laravel-boost__read-log-entries",
-      "mcp__laravel-boost__get-config"
+      "mcp__laravel-boost__get-config",
+      "Bash(ls:*)",
+      "Bash(head:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

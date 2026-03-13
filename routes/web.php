@@ -28,11 +28,15 @@ use App\Admin\Users\Controllers\UserFullReportController;
 use App\Admin\Users\Controllers\UsersController;
 use App\Frontend\Assignments\Controllers\AssignmentController as FEAssignmentController;
 use App\Frontend\Assignments\Controllers\StoreStudentAssignmentController;
+use App\Frontend\Auth\Controllers\AuthController;
+use App\Frontend\ContactFormController;
 use App\Frontend\Courses\Controllers\CourseAnswerController;
 use App\Frontend\Courses\Controllers\CourseController;
 use App\Frontend\Courses\Controllers\CourseProgressController;
 use App\Frontend\Courses\Controllers\CourseQuestionController;
 use App\Frontend\Courses\Controllers\PdfAnnotationController;
+use App\Frontend\Home\Controllers\PagesController;
+use App\Frontend\PaymentController;
 use App\Frontend\Students\Controllers\AttendanceController;
 use App\Frontend\Students\Controllers\EnrolledCoursesIndexController;
 use App\Frontend\Students\Controllers\EnrollmentController;
@@ -251,18 +255,27 @@ Route::get('/home', [HomeController::class, 'getIndex']);
 
 Route::get('/', function () {
     if (config('app.marketplace_enabled')) {
-        return app(\App\Http\Controllers\HomeController::class)->getIndex();
+        return app(\App\Marketplace\Controllers\MarketplaceController::class)->home();
     }
+
     return redirect()->route('admin.get.login');
 })->name('home');
 
 if (config('app.marketplace_enabled')) {
-    // Marketplace public routes — copy your blade controllers here
-    // Example:
-    // Route::get('courses', [\App\Marketplace\Controllers\CourseListingController::class, 'index'])->name('marketplace.courses');
-    // Route::get('courses/{course:slug}', [\App\Marketplace\Controllers\CourseDetailController::class, 'show'])->name('marketplace.courses.detail');
-    // Route::get('register', [\App\Marketplace\Controllers\RegisterController::class, 'show'])->name('register');
-    // Route::post('register', [\App\Marketplace\Controllers\RegisterController::class, 'store']);
+    Route::get('/about-us', [PagesController::class, 'getAbout'])->name('get.about');
+    Route::get('/contact-us', [PagesController::class, 'getContact'])->name('get.contact');
+    Route::get('/courses', [PagesController::class, 'getCourses'])->name('get.courses');
+    Route::get('/courses/{slug}', [PagesController::class, 'getCourse'])->name('get.course');
+    Route::get('/login', [AuthController::class, 'getLogin'])->name('get.login');
+    Route::post('login', [AuthController::class, 'postLogin'])->name('post.login');
+    Route::get('/register', [AuthController::class, 'getRegister'])->name('get.register');
+    Route::post('/register', [AuthController::class, 'postRegister'])->name('post.register');
+    Route::post('/create-session', [PaymentController::class, 'createSession'])->name('create.session');
+    Route::get('/lp/{slug}', [PagesController::class, 'getLandingPage'])->name('get.landingpage');
+    Route::get('thank-you', function () {
+        return view('marketplace/pages/thank-you');
+    });
+    Route::post('/contact-form', ContactFormController::class)->name('contact.form.submit');
 }
 
 Route::prefix('dashboard')->name('dashboard.')->group(function () {
