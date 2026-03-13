@@ -41,6 +41,7 @@ class Course extends Model implements HasMedia
         'course_status',
         'category_id',
         'announcement',
+        'price',
     ];
 
     protected $casts = [

@@ -16,6 +16,7 @@ use App\Admin\Courses\Controllers\LessonController;
 use App\Admin\Courses\Controllers\TopicController;
 use App\Admin\Courses\Controllers\VimeoUploadController;
 use App\Admin\FileLibrary\Controllers\FileLibraryController;
+use App\Admin\Payments\Controllers\AdminPaymentsController;
 use App\Admin\Quizzes\Controllers\QuestionController;
 use App\Admin\Quizzes\Controllers\QuizAttemptController;
 use App\Admin\Quizzes\Controllers\QuizController;
@@ -43,12 +44,12 @@ use App\Frontend\Students\Controllers\EnrollmentController;
 use App\Frontend\Students\Controllers\StudentCalendarController;
 use App\Frontend\Students\Controllers\StudentProfileController;
 use App\Frontend\Students\Controllers\StudentQuizController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\General\GeneralController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Marketplace\Controllers\MarketplaceController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -70,10 +71,8 @@ Route::get('forgot-password', [App\Http\Controllers\Auth\ForgotPasswordControlle
 Route::mediaLibrary();
 
 Route::prefix('admin')->group(function () {
-
     Route::get('/', [UsersController::class, 'handleRedirect'])->name('admin.home');
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('admin.get.login');
-    Route::post('/login', [LoginController::class, 'login'])->name('admin.post.login');
+    // Login is handled by Auth::routes() via LoginController
 
     Route::middleware(['auth', 'check_user_type'])->group(function () {
         Route::prefix('users')->name('users.')->group(function () {
@@ -130,7 +129,6 @@ Route::prefix('admin')->group(function () {
         /** Course routes end */
 
         /** Quiz routes start */
-        Route::get('quizzes-ajax', [QuizController::class, 'getAjaxList'])->name('quizzes.getAjaxList');
         Route::prefix('quizzes')->name('quizzes.')->group(function () {
 
             Route::prefix('/{quiz}/questions')->group(function () {
@@ -198,6 +196,9 @@ Route::prefix('admin')->group(function () {
         Route::post('/assignment-extend-request/{assignment_extend_request}/reject', RejectExtendAssignmentRequestController::class)->name('extend-date.reject');
 
         Route::resource('calendars', CalendarEventController::class);
+        Route::resource('payments', AdminPaymentsController::class);
+        Route::post('payments/{payment}/confirm', [AdminPaymentsController::class, 'confirm'])->name('payments.confirm');
+
         Route::get('batches/{batch}/users', [BatchesController::class, 'getUsers'])->name('batches.get.users');
         Route::resource('batches', BatchesController::class);
         Route::resource('categories', CategoryController::class);
@@ -216,11 +217,17 @@ Route::middleware('auth.frontend')->group(function () {
     Route::post('courses/{course}/question', CourseQuestionController::class)->name('courses.post.question');
     Route::post('courses/{course}/mark-complete', [CourseProgressController::class, 'markComplete'])->name('courses.post.mark-complete');
     Route::get('courses/enrolled', EnrolledCoursesIndexController::class)->name('courses.get.enrolled');
-    Route::get('courses/{course:slug}', CourseController::class)->name('courses.get.details');
+    Route::get('enrolled-courses/{course:slug}', CourseController::class)->name('courses.get.details');
     Route::get('courses/{course}/users/{user}/enroll', EnrollmentController::class)->name('courses.user.enroll');
     Route::post('questions/{question}/answer', CourseAnswerController::class)->name('question.post.answer');
     Route::get('pdf-annotations/{mediaId}', [PdfAnnotationController::class, 'show'])->name('pdf-annotations.show');
     Route::post('pdf-annotations/{mediaId}', [PdfAnnotationController::class, 'upsert'])->name('pdf-annotations.upsert');
+
+    Route::get('courses/{course:slug}/checkout', [\App\Frontend\CheckoutController::class, 'index'])->name('courses.checkout');
+    Route::post('courses/{course}/users/{user}/enroll', EnrollmentController::class)->name('courses.user.enroll');
+    Route::post('courses/{course}/payment/bank', [PaymentController::class, 'submitBankTransfer'])->name('payment.bank.submit');
+    Route::post('courses/{course}/payment/emi', [PaymentController::class, 'submitEMI'])->name('payment.emi.submit');
+    Route::post('questions/{question}/answer', CourseAnswerController::class)->name('question.post.answer');
 
     Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.get');
     Route::post('attendance/hours', [AttendanceController::class, 'saveHours'])->name('attendance.post.hours');
@@ -252,13 +259,12 @@ Route::middleware('auth.frontend')->group(function () {
 });
 
 Route::get('/home', [HomeController::class, 'getIndex']);
-
 Route::get('/', function () {
     if (config('app.marketplace_enabled')) {
-        return app(\App\Marketplace\Controllers\MarketplaceController::class)->home();
+        return app(MarketplaceController::class)->home();
     }
 
-    return redirect()->route('admin.get.login');
+    return redirect()->route('login');
 })->name('home');
 
 if (config('app.marketplace_enabled')) {
@@ -266,16 +272,14 @@ if (config('app.marketplace_enabled')) {
     Route::get('/contact-us', [PagesController::class, 'getContact'])->name('get.contact');
     Route::get('/courses', [PagesController::class, 'getCourses'])->name('get.courses');
     Route::get('/courses/{slug}', [PagesController::class, 'getCourse'])->name('get.course');
-    Route::get('/login', [AuthController::class, 'getLogin'])->name('get.login');
-    Route::post('login', [AuthController::class, 'postLogin'])->name('post.login');
     Route::get('/register', [AuthController::class, 'getRegister'])->name('get.register');
     Route::post('/register', [AuthController::class, 'postRegister'])->name('post.register');
     Route::post('/create-session', [PaymentController::class, 'createSession'])->name('create.session');
     Route::get('/lp/{slug}', [PagesController::class, 'getLandingPage'])->name('get.landingpage');
+    Route::post('/contact-form', ContactFormController::class)->name('contact.form.submit');
     Route::get('thank-you', function () {
         return view('marketplace/pages/thank-you');
     });
-    Route::post('/contact-form', ContactFormController::class)->name('contact.form.submit');
 }
 
 Route::prefix('dashboard')->name('dashboard.')->group(function () {

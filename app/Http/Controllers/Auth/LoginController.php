@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use Domain\Attendance\Actions\CheckInAction;
+use Domain\Attendance\Actions\CheckOutAction;
 use Domain\Users\Enums\UserTypeEnum;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -38,5 +39,16 @@ class LoginController extends BaseController
             UserTypeEnum::ACCELERATED_STUDENT()->value => redirect()->intended('/students/dashboard'),
             default => tap(null, fn () => $this->guard()->logout()) ?: redirect('/login')->withErrors('Unauthorized access for this user type.'),
         };
+    }
+
+    public function logout(Request $request)
+    {
+        (new CheckOutAction)->handle($this->guard()->user(), $request->get('total_hours'));
+
+        $this->guard()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

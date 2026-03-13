@@ -49,16 +49,16 @@ class PaymentController extends Controller
             'amount' => 'nullable|numeric',
         ]);
 
-        $course = Course::query()->where('slug', $request->get('slug'))->first();
+        $course = Course::query()->where('slug', $request->input('slug'))->first();
 
         if (! $course) {
             return response()->json([
-                'error' => "there is no course found with slug '{$request->get('slug')}'",
+                'error' => "there is no course found with slug '{$request->input('slug')}'",
             ], 404);
         }
 
         $data = [
-            'amount' => $request->get('amount', $course->price),
+            'amount' => $request->input('amount', $course->price),
             'currency' => 'USD',
             'merchant_reference_id' => Str::uuid(),
             'timestamp' => now()->format('Y/m/d H:i:s'),
@@ -86,8 +86,8 @@ class PaymentController extends Controller
             'installment_no' => 'nullable|integer',
         ]);
 
-        $amount = $request->get('amount', $course->price);
-        $installmentProgress = $request->get('installment_progress', 0); // Default to 0 (pending full enrollment) or 1?
+        $amount = $request->input('amount', $course->price);
+        $installmentProgress = $request->input('installment_progress', 0); // Default to 0 (pending full enrollment) or 1?
         // Logic: if installment_progress is provided, use it. If not, assume full payment (course start).
         // Actually, existing full payment bank transfer logic sets progress=0, status=pending.
 
@@ -101,8 +101,8 @@ class PaymentController extends Controller
             'user_id' => Auth::id(),
             'course_id' => $course->id,
             'amount' => $amount,
-            'payment_method' => PaymentMethodEnum::BANK_TRANSFER(),
-            'status' => PaymentStatusEnum::PENDING(),
+            'payment_method' => PaymentMethodEnum::BANK_TRANSFER()->value,
+            'status' => PaymentStatusEnum::PENDING()->value,
         ]);
 
         if ($request->hasFile('proof')) {
@@ -127,9 +127,9 @@ class PaymentController extends Controller
 
         $user->enrolled_courses()->syncWithoutDetaching([
             $course->id => [
-                'status' => 'pending',
+                'status' => PaymentStatusEnum::PENDING()->value,
                 'installment_progress' => $installmentProgress,
-                'payment_method' => PaymentMethodEnum::BANK_TRANSFER(),
+                'payment_method' => PaymentMethodEnum::BANK_TRANSFER()->value,
                 'referred_by_id' => $referredById,
                 'source' => $source,
             ],

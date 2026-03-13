@@ -1,7 +1,7 @@
 <html lang="en">
 
 <head>
-    @include('frontend.layouts.front-partial.head')
+    @include('marketplace.layouts.front-partial.head')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Meta Pixel Code -->
     @stack('styles')
@@ -59,7 +59,7 @@
     <!--</div>-->
 
     <!-- Navbar code starts here Header -->
-    @include('frontend.layouts.front-partial.header')
+    @include('marketplace.layouts.front-partial.header')
 
     <!-- navbar code ends here -->
     <div class="social-button">
@@ -384,7 +384,7 @@
         </div>
     </section>
 
-    @include('frontend.layouts.front-partial.footer')
+    @include('marketplace.layouts.front-partial.footer')
 
 
     <!-- #region Global ============================ -->
@@ -547,7 +547,7 @@
             <i class="icon-arrow-up"></i>
         </a>
     </div>
-    @include('frontend.layouts.front-partial.scripts')
+    @include('marketplace.layouts.front-partial.scripts')
     @stack('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function() {

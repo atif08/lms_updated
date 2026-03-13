@@ -14,6 +14,21 @@ export default function ContentViewer({ activeContent }) {
 
     if (mediaType === 'pdf') return <PdfAnnotationViewer url={url} mediaId={mediaId} />;
 
+    if (mediaType === 'vimeo') {
+        return (
+            <div style={{ position: 'relative', height: '66vh', width: '100%', backgroundColor: '#000' }}>
+                <iframe
+                    key={url}
+                    src={url}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title="Vimeo video"
+                />
+            </div>
+        );
+    }
+
     if (mediaType === 'video') {
         return (
             <div className="bg-black border-b border-gray-200" style={{ height: '66vh' }}>

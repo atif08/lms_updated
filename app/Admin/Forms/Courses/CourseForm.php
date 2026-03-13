@@ -64,6 +64,13 @@ class CourseForm extends BaseForm
                 'rules' => ['required', 'string', 'max:255'],
                 'value' => $course?->course_duration_min ?? ''
             ])*/
+            ->add('price', FIELD::NUMBER, [
+                'label' => required_label('Price'),
+                'wrapper' => ['class' => 'form-group col-lg-12 mb-2'],
+                'attr' => ['class' => 'form-control', 'step' => '0.01', 'min' => '0'],
+                'rules' => ['required', 'numeric', 'min:0'],
+                'value' => $course?->price ?? '',
+            ])
             ->add('description', 'ck_editor', ['description' => $course->description ?? ''])
 //            ->add('difficulty_level', FIELD::SELECT, [
 //                'label'    => __('Difficulty Level'),

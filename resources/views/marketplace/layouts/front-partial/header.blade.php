@@ -451,7 +451,7 @@
                             <i class="icon-rocket"></i>Register Now
                         </a>
                         &nbsp;
-                        <a href="{{ route('get.login') }}" class="btn ml-lg-auto primary-button">Login</a>
+                        <a href="{{ route('login') }}" class="btn ml-lg-auto primary-button">Login</a>
                     @endif
                     <!--Suggestion: Replace the purchase button above with a contact button. <a href="#contact" class="smooth-anchor btn ml-lg-auto primary-button"><i class="icon-rocket"></i>CONTACT US</a>-->
                 </li>

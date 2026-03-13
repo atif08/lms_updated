@@ -20,6 +20,7 @@ class EnrolledCoursesIndexController extends BaseController
                 'name' => $course->name,
                 'slug' => $course->slug,
                 'image' => get_image($course->media),
+                'enrollment_status' => $course->pivot->status,
             ]);
 
         return Inertia::render('Courses/Enrolled', compact('courses'));

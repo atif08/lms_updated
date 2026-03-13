@@ -136,7 +136,12 @@ class LessonController extends BaseController
 
         $lesson->users()->sync($request->get('user_ids'));
 
-        $lesson->syncFromMediaLibraryRequest($request->media ?? [])
+        $mediaItems = collect($request->media ?? [])
+            ->filter(fn ($item) => ! empty($item['uuid']) && \Illuminate\Support\Str::isUuid($item['uuid']))
+            ->values()
+            ->all();
+
+        $lesson->syncFromMediaLibraryRequest($mediaItems)
             ->toMediaCollection(MediaCollectionEnum::IMAGES());
 
         app(ConvertLessonMediaToPdfAction::class)

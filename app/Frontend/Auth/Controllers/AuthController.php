@@ -2,18 +2,18 @@
 
 namespace App\Frontend\Auth\Controllers;
 
-use App\Http\Controllers\BaseController;
 use Domain\Attendance\Actions\CheckInAction;
 use Domain\Users\Enums\UserTypeEnum;
 use Domain\Users\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Support\Enums\DomainListEnum;
 
-class AuthController extends BaseController
+class AuthController extends Controller
 {
     public function getLogin(Request $request): View
     {

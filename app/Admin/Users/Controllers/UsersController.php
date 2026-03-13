@@ -27,8 +27,6 @@ class UsersController extends BaseController
 {
     protected $settings_page = true;
 
-
-
     public function getIndex(Request $request): JsonResponse|View
     {
 
@@ -43,11 +41,11 @@ class UsersController extends BaseController
         if ($request->ajax()) {
             return $data_table->getData();
         }
-//
-//        $data_table->setFilterData([
-//            'batches' => Batch::all(),
-//            'courses' => Course::query()->active()->get(),
-//        ]);
+        //
+        //        $data_table->setFilterData([
+        //            'batches' => Batch::all(),
+        //            'courses' => Course::query()->active()->get(),
+        //        ]);
 
         return $this->renderView('admin.users.index', compact('data_table', 'user_assignments', 'extend_requests'));
     }
@@ -66,7 +64,7 @@ class UsersController extends BaseController
             return redirect('/admin/courses');
         }
 
-        return redirect('/admin/login');
+        return redirect()->route('login');
     }
 
     public function getLogin(Request $request)
@@ -75,8 +73,7 @@ class UsersController extends BaseController
 
         Auth::login($this->selected_user);
 
-        if($this->selected_user->user_type == UserTypeEnum::STANDARD_STUDENT() || $this->selected_user->user_type == UserTypeEnum::ACCELERATED_STUDENT())
-        {
+        if ($this->selected_user->user_type == UserTypeEnum::STANDARD_STUDENT() || $this->selected_user->user_type == UserTypeEnum::ACCELERATED_STUDENT()) {
 
             return redirect('/courses/enrolled');
         }

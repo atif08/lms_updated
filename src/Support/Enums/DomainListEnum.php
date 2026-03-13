@@ -2,7 +2,7 @@
 
 namespace Support\Enums;
 
-use Spatie\Enum\Laravel\Enum;
+use Spatie\Enum\Enum;
 
 /**
  * Class UserTypeEnum

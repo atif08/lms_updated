@@ -1,5 +1,5 @@
 const ICONS = {
-    pdf: '📄', video: '🎬', image: '🖼️',
+    pdf: '📄', video: '🎬', vimeo: '🎬', image: '🖼️',
     powerpoint: '📊', ppt: '📊', doc: '📝', document: '📝',
     EXTERNAL_LINK: '🔗', IFRAME: '🖥️',
 };

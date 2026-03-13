@@ -8,6 +8,8 @@ use Domain\Courses\Actions\CalculateUserCourseProgressAction;
 use Domain\Courses\Enums\LessonTypeEnum;
 use Domain\Courses\Models\Course;
 use Domain\Courses\Models\Lesson;
+use Domain\Payments\Enums\PaymentMethodEnum;
+use Domain\Payments\Enums\PaymentStatusEnum;
 use Domain\Quizzes\Models\Quiz;
 use Domain\Users\Enums\UserTypeEnum;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -19,6 +21,17 @@ class CourseController extends BaseController
     public function __invoke(Course $course): Response
     {
         $user = $this->user;
+
+        // Check if user has access to course:
+        // Admin always has access, students must be enrolled.
+        abort_if(
+            ! $user->isSuperAdminUser() &&
+            $user->user_type !== UserTypeEnum::ADMIN() &&
+            $user->user_type !== UserTypeEnum::TEACHER() &&
+            ! $user->enrolled_courses()->where('course_id', $course->id)->wherePivot('status', PaymentStatusEnum::COMPLETED()->value)->exists(),
+            403,
+            'You are not enrolled in this course.'
+        );
 
         $course->load('user_course_progress');
         $completedIds = $course->user_course_progress->pluck('progressable_id')->toArray();
@@ -54,9 +67,9 @@ class CourseController extends BaseController
                     if ($model->type == LessonTypeEnum::Media()) {
                         $mediaItems = ($model->media ?? collect())->map(fn ($m) => [
                             'id' => $m->id,
-                            'url' => $m->original_url,
+                            'url' => $m->getCustomProperty('vimeo_embed_url') ?? $m->original_url,
                             'name' => $m->name,
-                            'media_type' => get_media_type($m),
+                            'media_type' => $m->getCustomProperty('video_provider') === 'vimeo' ? 'vimeo' : get_media_type($m),
                             'completed' => in_array($m->id, $completedIds),
                             'progressable_id' => $m->id,
                             'progressable_type' => get_class($m),
@@ -134,11 +147,16 @@ class CourseController extends BaseController
                 ]),
             ])->values();
 
+        $enrollment = $user->enrolled_courses()
+            ->where('course_id', $course->id)
+            ->first();
+
         return Inertia::render('Courses/Details', [
             'course' => [
                 'id' => $course->id,
                 'name' => $course->name,
                 'slug' => $course->slug,
+                'price' => (float) $course->price,
                 'description' => $course->description,
                 'announcement' => $course->announcement,
                 'is_question' => (bool) $course->is_question,
@@ -147,6 +165,11 @@ class CourseController extends BaseController
             'topics' => $topicsData,
             'assignments' => $assignments,
             'course_progress' => (new CalculateUserCourseProgressAction)->handle($course),
+            'enrollment' => [
+                'user_id' => $user->id,
+                'is_emi' => $enrollment?->pivot?->payment_method === PaymentMethodEnum::EMI()->value,
+                'installment_progress' => (int) ($enrollment?->pivot?->installment_progress ?? 3),
+            ],
         ]);
     }
 }

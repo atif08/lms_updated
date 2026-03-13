@@ -1,5 +1,5 @@
 <?php $page = 'Advancing Careers Through Professional Development | Know More About Us'; ?>
-@extends('frontend.layouts.front_layout')
+@extends('marketplace.layouts.front_layout')
 @section('style')
     <style>
         .button-enrollNow {
@@ -188,7 +188,7 @@
                 Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('get.login') }}">
+            <a class="enroll-button" href="{{ route('login') }}">
                 Enroll Now
             </a>
         @endif
@@ -551,7 +551,7 @@
                 Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('get.login') }}">
+            <a class="enroll-button" href="{{ route('login') }}">
                 Enroll Now
             </a>
         @endif
@@ -1010,7 +1010,7 @@
                 Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('get.login') }}">
+            <a class="enroll-button" href="{{ route('login') }}">
                 Enroll Now
             </a>
         @endif

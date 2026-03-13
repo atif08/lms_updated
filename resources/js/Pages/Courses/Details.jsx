@@ -4,12 +4,15 @@ import TopNav from './Partials/TopNav';
 import ContentViewer from './Partials/ContentViewer';
 import BottomSection from './Partials/BottomSection';
 import CourseSidebar from './Partials/CourseSidebar';
+import InstallmentPaymentModal from './Partials/InstallmentPaymentModal';
 
-export default function Details({ course, topics, assignments, course_progress }) {
+export default function Details({ course, topics, assignments, course_progress, enrollment }) {
     const [activeContent, setActiveContent] = useState(null);
     const [activeTab, setActiveTab]         = useState('overview');
     const [progress, setProgress]           = useState(course_progress);
     const [openTopics, setOpenTopics]       = useState(new Set());
+    const [payingInstallment, setPayingInstallment] = useState(null);
+    const [installmentProgress, setInstallmentProgress] = useState(enrollment.installment_progress);
 
     const [progressMap, setProgressMap] = useState(() => {
         const map = {};
@@ -57,6 +60,13 @@ export default function Details({ course, topics, assignments, course_progress }
             return next;
         });
 
+    const handlePaymentSuccess = (newProgress) => {
+        setInstallmentProgress(newProgress);
+        setPayingInstallment(null);
+    };
+
+    const enrollmentWithProgress = { ...enrollment, installment_progress: installmentProgress };
+
     return (
         <div className="h-screen flex flex-col overflow-hidden bg-white">
             <TopNav course={course} progress={progress} />
@@ -81,8 +91,21 @@ export default function Details({ course, topics, assignments, course_progress }
                     toggleTopic={toggleTopic}
                     loadContent={loadContent}
                     toggleProgress={toggleProgress}
+                    enrollment={enrollmentWithProgress}
+                    onPayInstallment={setPayingInstallment}
                 />
             </div>
+
+            {payingInstallment && (
+                <InstallmentPaymentModal
+                    course={course}
+                    installmentNo={payingInstallment}
+                    installmentProgress={payingInstallment}
+                    userId={enrollment.user_id}
+                    onSuccess={handlePaymentSuccess}
+                    onClose={() => setPayingInstallment(null)}
+                />
+            )}
         </div>
     );
 }

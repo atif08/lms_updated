@@ -182,7 +182,8 @@ class User extends Authenticatable implements HasMedia
     public function enrolled_courses(): BelongsToMany
     {
 
-        return $this->belongsToMany(Course::class, 'enrollments');
+        return $this->belongsToMany(Course::class, 'enrollments')
+            ->withPivot('status', 'payment_method', 'installment_progress');
     }
 
     public function today_attendance(): HasOne

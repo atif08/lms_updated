@@ -53,11 +53,10 @@ export default function Enrolled({ courses }) {
 }
 
 function CourseCard({ course }) {
-    return (
-        <a
-            href={`/courses/${course.slug}`}
-            className="flex items-center gap-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow"
-        >
+    const isPending = course.enrollment_status !== 'completed';
+
+    const cardContent = (
+        <>
             <img
                 src={course.image}
                 alt={course.name}
@@ -65,9 +64,34 @@ function CourseCard({ course }) {
                 onError={e => { e.target.onerror = null; e.target.src = '/frontend/img/course-01.png'; }}
             />
             <div className="flex-1 min-w-0">
-                <h3 className="text-base font-semibold text-gray-800 truncate">{course.name}</h3>
-                <p className="mt-1 text-sm text-indigo-500 font-medium">View Course →</p>
+                <h3 className={`text-base font-semibold truncate ${isPending ? 'text-gray-400' : 'text-gray-800'}`}>
+                    {course.name}
+                </h3>
+                {isPending ? (
+                    <span className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">
+                        ⏳ Payment Pending Approval
+                    </span>
+                ) : (
+                    <p className="mt-1 text-sm text-indigo-500 font-medium">View Course →</p>
+                )}
             </div>
+        </>
+    );
+
+    if (isPending) {
+        return (
+            <div className="flex items-center gap-5 bg-white rounded-2xl shadow-sm border border-amber-100 p-5 opacity-75 cursor-not-allowed">
+                {cardContent}
+            </div>
+        );
+    }
+
+    return (
+        <a
+            href={`/courses/${course.slug}`}
+            className="flex items-center gap-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow"
+        >
+            {cardContent}
         </a>
     );
 }
