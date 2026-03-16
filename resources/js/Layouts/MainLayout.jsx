@@ -1,4 +1,6 @@
 import { usePage, router, Link } from '@inertiajs/react';
+
+const AVATAR_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23e0e7ff'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%23a5b4fc'/%3E%3Cellipse cx='20' cy='36' rx='12' ry='9' fill='%23a5b4fc'/%3E%3C/svg%3E";
 import { useEffect, useRef, useState } from 'react';
 
 export default function MainLayout({ children, hideHeader = false }) {
@@ -58,10 +60,10 @@ function Header({ user, domain }) {
                                 >
                                     <div className="relative">
                                         <img
-                                            src={user.avatar || '/frontend/img/students/profile-avatar.png'}
+                                            src={user.avatar || AVATAR_FALLBACK}
                                             alt={user.name}
                                             className="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-200"
-                                            onError={e => { e.target.src = '/frontend/img/students/profile-avatar.png'; }}
+                                            onError={e => { e.target.onerror = null; e.target.src = AVATAR_FALLBACK; }}
                                         />
                                         <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-white" />
                                     </div>

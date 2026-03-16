@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AssignmentsSection from './AssignmentsSection';
 
-const DEFAULT_AVATAR = '/frontend/img/students/profile-avatar.png';
+const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23e0e7ff'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%23a5b4fc'/%3E%3Cellipse cx='20' cy='36' rx='12' ry='9' fill='%23a5b4fc'/%3E%3C/svg%3E";
 
 export default function BottomSection({ course, assignments, activeTab, setActiveTab, activeContent, loadContent }) {
     const tabs = [

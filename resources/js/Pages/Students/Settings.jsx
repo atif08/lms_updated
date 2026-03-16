@@ -1,11 +1,13 @@
 import { useForm, usePage, Link, router } from '@inertiajs/react';
+
+const AVATAR_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23e0e7ff'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%23a5b4fc'/%3E%3Cellipse cx='20' cy='36' rx='12' ry='9' fill='%23a5b4fc'/%3E%3C/svg%3E";
 import { useRef, useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import Breadcrumb from '@/Components/Common/Breadcrumb';
 import StudentSidebar from '@/Components/Common/StudentSidebar';
 import InputField, { inputClass } from '@/Components/UI/InputField';
 
-const DEFAULT_AVATAR = '/frontend/img/students/profile-avatar.png';
+const DEFAULT_AVATAR = AVATAR_FALLBACK;
 
 const COUNTRY_CODES = [
     '+971', '+92', '+1', '+44', '+91', '+49', '+33', '+81', '+86', '+61',

@@ -1,5 +1,5 @@
 <?php $page = 'Advancing Careers Through Professional Development | Know More About Us'; ?>
-@extends('frontend.layouts.front_layout')
+@extends('marketplace.layouts.front_layout')
 @section('style')
  <style>
       :root {

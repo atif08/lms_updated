@@ -1,4 +1,6 @@
 import { usePage, Link } from '@inertiajs/react';
+
+const AVATAR_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23e0e7ff'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%23a5b4fc'/%3E%3Cellipse cx='20' cy='36' rx='12' ry='9' fill='%23a5b4fc'/%3E%3C/svg%3E";
 import MainLayout from '@/Layouts/MainLayout';
 import Breadcrumb from '@/Components/Common/Breadcrumb';
 import StudentSidebar from '@/Components/Common/StudentSidebar';
@@ -33,10 +35,10 @@ export default function Profile() {
                         {/* Avatar + name card */}
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center gap-5">
                             <img
-                                src={user.avatar || '/frontend/img/students/profile-avatar.png'}
+                                src={user.avatar || AVATAR_FALLBACK}
                                 alt={user.name}
                                 className="h-20 w-20 rounded-full object-cover ring-4 ring-indigo-100"
-                                onError={e => { e.target.src = '/frontend/img/students/profile-avatar.png'; }}
+                                onError={e => { e.target.onerror = null; e.target.src = AVATAR_FALLBACK; }}
                             />
                             <div>
                                 <h2 className="text-xl font-bold text-gray-800">{user.name}</h2>

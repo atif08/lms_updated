@@ -1,5 +1,5 @@
 <?php $page = 'Professional Cyber Security Training with Real-World Simulations'; ?>
-@extends('frontend.layouts.front_layout')
+@extends('marketplace.layouts.front_layout')
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/professional-courses.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />

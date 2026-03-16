@@ -1,5 +1,5 @@
 <?php $page = 'Advanced Python Full-Stack Training with Real-Time Projects'; ?>
-@extends('frontend.layouts.front_layout')
+@extends('marketplace.layouts.front_layout')
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/hyderabad-courses-landing-page.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />

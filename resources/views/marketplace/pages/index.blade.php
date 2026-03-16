@@ -1,5 +1,5 @@
 <?php $page = 'Government Recognised Institution | Online Courses'; ?>
-@extends('frontend.layouts.front_layout')
+@extends('marketplace.layouts.front_layout')
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/scrolling-card.css') }}">
 @endpush
