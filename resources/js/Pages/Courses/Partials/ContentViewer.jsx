@@ -1,15 +1,12 @@
-import { useRef } from 'react';
 import PdfAnnotationViewer from './PdfAnnotationViewer';
 
-// Single source of truth for the viewer height.
-// calc(100vh - 56px) fills everything below the sticky TopNav (56px).
-const VIEWER_H = 'calc(100vh - 56px)';
-const VIEWER_STYLE = { height: VIEWER_H, width: '100%' };
+// No vh units — each case uses flex-1 so the parent flex column controls the height.
+const BASE = 'flex-1 min-h-0 overflow-hidden w-full';
 
 export default function ContentViewer({ activeContent }) {
     if (!activeContent) {
         return (
-            <div className="flex items-center justify-center bg-gray-50 border-b border-gray-200" style={VIEWER_STYLE}>
+            <div className={`${BASE} flex items-center justify-center bg-gray-50 border-b border-gray-200`}>
                 <p className="text-gray-400 text-sm">Select a lesson from the sidebar to start learning</p>
             </div>
         );
@@ -19,7 +16,7 @@ export default function ContentViewer({ activeContent }) {
 
     if (mediaType === 'pdf') {
         return (
-            <div style={VIEWER_STYLE} className="border-b border-gray-200">
+            <div className={`${BASE} border-b border-gray-200`}>
                 <PdfAnnotationViewer url={url} mediaId={mediaId} />
             </div>
         );
@@ -27,7 +24,7 @@ export default function ContentViewer({ activeContent }) {
 
     if (mediaType === 'vimeo') {
         return (
-            <div style={{ ...VIEWER_STYLE, position: 'relative', backgroundColor: '#000' }} className="border-b border-gray-200">
+            <div className={`${BASE} relative border-b border-gray-200`} style={{ backgroundColor: '#000' }}>
                 <iframe
                     key={url}
                     src={url}
@@ -42,7 +39,7 @@ export default function ContentViewer({ activeContent }) {
 
     if (mediaType === 'video') {
         return (
-            <div className="bg-black border-b border-gray-200" style={VIEWER_STYLE}>
+            <div className={`${BASE} bg-black border-b border-gray-200`}>
                 <video controls className="w-full h-full" key={url}>
                     <source src={url} />
                 </video>
@@ -52,7 +49,7 @@ export default function ContentViewer({ activeContent }) {
 
     if (['powerpoint', 'ppt', 'doc', 'document'].includes(mediaType)) {
         return (
-            <div className="border-b border-gray-200" style={VIEWER_STYLE}>
+            <div className={`${BASE} border-b border-gray-200`}>
                 <iframe
                     src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`}
                     className="w-full h-full border-0"
@@ -64,7 +61,7 @@ export default function ContentViewer({ activeContent }) {
 
     if (mediaType === 'EXTERNAL_LINK') {
         return (
-            <div className="border-b border-gray-200" style={VIEWER_STYLE}>
+            <div className={`${BASE} border-b border-gray-200`}>
                 <iframe src={url} className="w-full h-full border-0" allow="autoplay" title="External content" />
             </div>
         );
@@ -72,7 +69,7 @@ export default function ContentViewer({ activeContent }) {
 
     if (mediaType === 'image') {
         return (
-            <div className="flex items-center justify-center bg-gray-100 border-b border-gray-200 overflow-auto" style={VIEWER_STYLE}>
+            <div className={`${BASE} flex items-center justify-center bg-gray-100 border-b border-gray-200`}>
                 <img src={url} alt="" className="max-w-full max-h-full object-contain" />
             </div>
         );
@@ -80,14 +77,14 @@ export default function ContentViewer({ activeContent }) {
 
     if (mediaType === 'IFRAME') {
         return (
-            <div className="border-b border-gray-200" style={VIEWER_STYLE}
+            <div className={`${BASE} border-b border-gray-200`}
                 dangerouslySetInnerHTML={{ __html: url }} />
         );
     }
 
     if (mediaType === 'quiz') {
         return (
-            <div className="flex items-center justify-center bg-gray-50 border-b border-gray-200" style={VIEWER_STYLE}>
+            <div className={`${BASE} flex items-center justify-center bg-gray-50 border-b border-gray-200`}>
                 <div className="text-center p-10 border-2 border-dashed border-indigo-200 rounded-2xl max-w-xs">
                     <img src="/assets/images/quiz.png" alt="" className="h-24 mx-auto mb-4"
                         onError={e => { e.target.style.display = 'none'; }} />

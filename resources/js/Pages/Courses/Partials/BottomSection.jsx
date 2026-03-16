@@ -14,7 +14,7 @@ export default function BottomSection({ course, assignments, activeTab, setActiv
     ];
 
     return (
-        <div className="flex-1">
+        <div className="flex-none flex flex-col overflow-hidden" style={{ height: 320 }}>
             <div className="flex border-b border-gray-200 bg-white sticky top-0 z-10 overflow-x-auto">
                 {tabs.map(tab => (
                     <button
@@ -34,7 +34,7 @@ export default function BottomSection({ course, assignments, activeTab, setActiv
                 ))}
             </div>
 
-            <div className="p-5">
+            <div className="p-5 overflow-y-auto flex-1">
                 {activeTab === 'overview' && (
                     <div className="prose max-w-none text-sm text-gray-700"
                         dangerouslySetInnerHTML={{ __html: course.description || '<p>No overview available.</p>' }} />

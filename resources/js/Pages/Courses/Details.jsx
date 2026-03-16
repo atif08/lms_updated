@@ -72,7 +72,7 @@ export default function Details({ course, topics, assignments, course_progress, 
             <TopNav course={course} progress={progress} />
 
             <div className="flex flex-1 overflow-hidden" style={{ paddingTop: 56 }}>
-                <div className="flex-1 flex flex-col overflow-y-auto min-w-0">
+                <div className="flex-1 flex flex-col overflow-hidden min-w-0">
                     <ContentViewer activeContent={activeContent} />
                     <BottomSection
                         course={course}

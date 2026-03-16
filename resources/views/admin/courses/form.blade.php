@@ -7,7 +7,7 @@
 
 @endsection
 @section('extra-buttons')
-    <a href="{{url('courses/'.$course->slug)}}" target="_blank" class="btn btn-success float-end">Preview</a>
+    <a href="{{url('enrolled-courses/'.$course->slug)}}" target="_blank" class="btn btn-success float-end">Preview</a>
 @endsection
 
 @section('content')
