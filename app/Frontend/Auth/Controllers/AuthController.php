@@ -5,12 +5,13 @@ namespace App\Frontend\Auth\Controllers;
 use Domain\Attendance\Actions\CheckInAction;
 use Domain\Users\Enums\UserTypeEnum;
 use Domain\Users\Models\User;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
+use Inertia\Response;
 use Support\Enums\DomainListEnum;
 
 class AuthController extends Controller
@@ -68,32 +69,37 @@ class AuthController extends Controller
         }
     }
 
-    public function getRegister(Request $request): View
+    public function getRegister(Request $request): Response
     {
-
-        return view('frontend/auth/register');
-
+        return Inertia::render('Auth/Register');
     }
 
     public function postRegister(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:5|max:30',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-        ]
-        );
-
-        User::query()->create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'user_type' => UserTypeEnum::STANDARD_STUDENT(),
-            'is_active' => true,
-            'password' => Hash::make($request->get('password')),
-
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'country_code' => 'required|string|max:10',
+            'mobile' => 'required|string|max:20',
+            'password' => 'required|min:8|confirmed',
         ]);
 
-        return redirect('login')->withSuccess('You have signed-in');
+        $user = User::query()->create([
+            'name' => $request->input('first_name').' '.$request->input('last_name'),
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+            'country_code' => $request->input('country_code'),
+            'mobile' => $request->input('mobile'),
+            'user_type' => UserTypeEnum::STANDARD_STUDENT(),
+            'is_active' => true,
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        Auth::login($user);
+
+        return Inertia::location('/');
     }
 
     public function dashboard()
