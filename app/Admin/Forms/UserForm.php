@@ -3,6 +3,7 @@
 namespace App\Admin\Forms;
 
 use App\Admin\Settings\Controllers\ProfileController;
+use App\Http\Controllers\Settings\ProfileController as HttpProfileController;
 use App\Models\Batch;
 use Domain\Courses\Models\Course;
 use Domain\Users\Enums\UserTypeEnum;
@@ -61,7 +62,7 @@ class UserForm extends BaseForm
                 'selected' => $this->user?->user_type ?? UserTypeEnum::STANDARD_STUDENT(),
                 'choices' => UserTypeEnum::getUsersDropdown(),
                 'rules' => ['required'],
-            ], $this->class !== ProfileController::class)
+            ], ! $this->isProfilePage())
 
             ->addIf('role', FIELD::SELECT, [
                 'label' => __('Role'),
@@ -70,13 +71,13 @@ class UserForm extends BaseForm
                 'selected' => $this->user?->getRoleNames()[0] ?? '',
                 'choices' => $roles->pluck('name', 'name')->toArray(),
                 'rules' => ['required'],
-            ], $this->class !== ProfileController::class && auth()->user()->user_type !== UserTypeEnum::FACULTY_MEMBER())
+            ], ! $this->isProfilePage() && auth()->user()->user_type !== UserTypeEnum::FACULTY_MEMBER())
             ->add('batch_id', FIELD::SELECT, [
                 'label' => __('Batch'),
                 'wrapper' => ['class' => 'form-group col-lg-12 mb-2 mt-2'],
                 'attr' => array_merge(
                     ['class' => 'form-select'],
-                    $this->class === ProfileController::class ? ['disabled' => 'disabled'] : []
+                    $this->isProfilePage() ? ['disabled' => 'disabled'] : []
                 ),
                 'selected' => $this->user?->batch_id ?? '',
                 'choices' => ['' => 'Select'] + $batches->pluck('name', 'id')->toArray(),
@@ -93,7 +94,7 @@ class UserForm extends BaseForm
                 'wrapper' => ['class' => 'form-group col-lg-12 mb-2 mt-2'],
                 'attr' => array_merge(
                     ['class' => 'form-select'],
-                    $this->class === ProfileController::class ? ['disabled' => 'disabled'] : []
+                    $this->isProfilePage() ? ['disabled' => 'disabled'] : []
                 ),
                 'selected' => $this->user->enrolled_courses[0]->id ?? '',
                 'choices' => ['' => 'Select'] + $courses->pluck('name', 'id')->toArray(),
@@ -113,14 +114,19 @@ class UserForm extends BaseForm
                 'attr' => ['class' => 'form-check-input'],
                 'rules' => ['sometimes', Rule::in(['1'])],
                 'checked' => ($this->user ? $this->user->is_active : false),
-            ], $this->class !== ProfileController::class)
+            ], ! $this->isProfilePage())
             ->add('media', 'single_media', ['item' => $this->user ?? new User])
             ->addSubmitButton();
     }
 
+    private function isProfilePage(): bool
+    {
+        return in_array($this->class, [ProfileController::class, HttpProfileController::class]);
+    }
+
     protected function addSubmitButton()
     {
-        if ($this->class == ProfileController::class) {
+        if ($this->isProfilePage()) {
             $button_title = __('Update Profile');
         } elseif ($this->user) {
             $button_title = __('Save');

@@ -84,6 +84,7 @@ class User extends Authenticatable implements HasMedia
         'region_code',
         'delete_status',
         'last_activity_at',
+        'referral_code',
     ];
 
     /**
@@ -106,6 +107,29 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            if ($user->user_type === \Domain\Users\Enums\UserTypeEnum::TEACHER()->value && empty($user->referral_code)) {
+                do {
+                    $code = strtoupper(\Illuminate\Support\Str::random(8));
+                } while (self::where('referral_code', $code)->exists());
+
+                $user->referral_code = $code;
+            }
+        });
+    }
+
+    public function referredStudents(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function referredByTeacher(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
 
     public function registerMediaCollections(): void
     {

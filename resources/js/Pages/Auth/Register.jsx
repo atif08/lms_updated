@@ -1,4 +1,5 @@
 import { useForm, Link } from '@inertiajs/react';
+import { useMemo } from 'react';
 import AuthLayout from '@/Layouts/AuthLayout';
 
 const COUNTRY_CODES = [
@@ -26,6 +27,8 @@ const COUNTRY_CODES = [
 const inputClass = 'w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500';
 
 export default function Register() {
+    const ref = useMemo(() => new URLSearchParams(window.location.search).get('ref') ?? '', []);
+
     const { data, setData, post, processing, errors } = useForm({
         first_name: '',
         last_name: '',
@@ -34,6 +37,7 @@ export default function Register() {
         mobile: '',
         password: '',
         password_confirmation: '',
+        ref,
     });
 
     const submit = (e) => {
@@ -123,6 +127,16 @@ export default function Register() {
                         className={inputClass}
                         placeholder="Repeat your password"
                         required
+                    />
+                </Field>
+
+                <Field label="Referral Code (optional)" error={errors.ref}>
+                    <input
+                        type="text"
+                        value={data.ref}
+                        onChange={e => setData('ref', e.target.value.toUpperCase())}
+                        className={inputClass}
+                        placeholder="Enter teacher referral code"
                     />
                 </Field>
 

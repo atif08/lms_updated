@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Settings;
 
-use App\Forms\ChangePasswordForm;
-use App\Forms\UserForm;
+use App\Admin\Forms\ChangePasswordForm;
+use App\Admin\Forms\UserForm;
 use App\Http\Controllers\BaseController;
 use App\Services\FlashMessage;
 use Illuminate\Http\Request;

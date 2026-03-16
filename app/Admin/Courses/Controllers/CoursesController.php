@@ -23,9 +23,9 @@ class CoursesController extends BaseController
 {
     public function index(Request $request): View|JsonResponse
     {
-        if (! auth()->user()->can(PermissionsEnum::COURSES()->value)) {
-            abort(403, 'Unauthorized action.');
-        }
+        //        if (! auth()->user()->can(PermissionsEnum::COURSES()->value)) {
+        //            abort(403, 'Unauthorized action.');
+        //        }
         $data_table = new CoursesDataTable(user: $this->user, request: $request);
         if ($request->ajax()) {
             return $data_table->getData();

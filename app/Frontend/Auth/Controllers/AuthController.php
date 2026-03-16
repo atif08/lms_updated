@@ -85,6 +85,10 @@ class AuthController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
+        $teacher = $request->input('ref')
+            ? User::where('referral_code', $request->input('ref'))->first()
+            : null;
+
         $user = User::query()->create([
             'name' => $request->input('first_name').' '.$request->input('last_name'),
             'first_name' => $request->input('first_name'),
@@ -95,6 +99,7 @@ class AuthController extends Controller
             'user_type' => UserTypeEnum::STANDARD_STUDENT(),
             'is_active' => true,
             'password' => Hash::make($request->input('password')),
+            'parent_id' => $teacher?->id,
         ]);
 
         Auth::login($user);
