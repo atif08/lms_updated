@@ -23,26 +23,19 @@ export default function ContentViewer({ activeContent }) {
     }
 
     if (mediaType === 'vimeo') {
+        const sep = url.includes('?') ? '&' : '?';
+        const vimeoUrl = `${url}${sep}title=0&byline=0&portrait=0&share=0&badge=0&autopause=0&dnt=1`;
+
         return (
-            <div className={`${BASE} relative border-b border-gray-200`} style={{ backgroundColor: '#000' }}>
+            <div className={`${BASE} flex flex-col border-b border-gray-200`} style={{ backgroundColor: '#000' }}>
                 <iframe
-                    key={url}
-                    src={url}
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                    key={vimeoUrl}
+                    src={vimeoUrl}
+                    style={{ flex: '1 1 0%', display: 'block', width: '100%', minHeight: 0, border: 'none' }}
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
                     title="Vimeo video"
                 />
-            </div>
-        );
-    }
-
-    if (mediaType === 'video') {
-        return (
-            <div className={`${BASE} bg-black border-b border-gray-200`}>
-                <video controls className="w-full h-full" key={url}>
-                    <source src={url} />
-                </video>
             </div>
         );
     }

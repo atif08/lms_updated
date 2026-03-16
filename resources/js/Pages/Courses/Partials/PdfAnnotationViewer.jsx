@@ -78,7 +78,8 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
     const renderPage = useCallback(async (doc, num, zoomLevel) => {
         const page  = await doc.getPage(num);
         const vp0   = page.getViewport({ scale: 1 });
-        const baseW = scrollAreaRef.current?.clientWidth || 800;
+        // Subtract p-4 padding (16px × 2) so the canvas never exceeds the visible area.
+        const baseW = (scrollAreaRef.current?.clientWidth || 800) - 32;
         const scale = (baseW / vp0.width) * (zoomLevel ?? zoomRef.current);
         const vp    = page.getViewport({ scale });
 
@@ -303,7 +304,7 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
             </div>
 
             {/* ── PDF canvas area ── */}
-            <div ref={scrollAreaRef} className="flex-1 overflow-auto bg-gray-50 flex justify-center p-4">
+            <div ref={scrollAreaRef} className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 flex justify-center p-4">
                 <div ref={containerRef} className="relative inline-block" onMouseUp={handleMouseUp}>
 
                     {loading && (
