@@ -76,6 +76,8 @@ class HandleInertiaRequests extends Middleware
             'domain' => [
                 'is_asti' => str_contains($request->getHost(), 'astiacademy.ac.ae'),
             ],
+
+            'marketplace' => config('app.marketplace_enabled', false),
         ];
     }
 }

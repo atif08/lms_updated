@@ -1,9 +1,9 @@
 import { usePage } from '@inertiajs/react';
 
 export default function AuthLayout({ children }) {
-    const { domain } = usePage().props;
+    const { marketplace } = usePage().props;
 
-    const logoSrc = domain?.is_asti ? '/frontend/img/ASTI.png' : '/frontend/img/BUC.png';
+    const logoSrc = marketplace ? '/images/logo-asti.png' : '/images/logo-btc.png';
     const bgSrc = '/frontend/img/login-img.jpg';
 
     return (
