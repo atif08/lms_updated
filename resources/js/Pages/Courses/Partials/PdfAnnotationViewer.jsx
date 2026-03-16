@@ -243,8 +243,8 @@ export default function PdfAnnotationViewer({ url, mediaId }) {
     const pageAnnotations = annotations.filter(a => a.page === pageNum);
 
     return (
-        <div ref={wrapperRef} className="flex flex-col border-b border-gray-200 bg-white"
-            style={{ height: isFullscreen ? '100vh' : '66vh' }}>
+        <div ref={wrapperRef} className="flex flex-col bg-white"
+            style={{ height: isFullscreen ? '100vh' : '100%' }}>
 
             {/* ── Top bar ── */}
             <div className="flex items-center gap-3 px-4 py-2 bg-gray-100 border-b border-gray-200 text-sm shrink-0 flex-wrap">
