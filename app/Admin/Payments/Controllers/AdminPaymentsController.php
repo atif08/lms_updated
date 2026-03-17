@@ -10,6 +10,7 @@ use Domain\Courses\Models\Course;
 use Domain\Payments\Enums\PaymentMethodEnum;
 use Domain\Payments\Enums\PaymentStatusEnum;
 use Domain\Payments\Models\Payment;
+use Domain\Users\Enums\UserTypeEnum;
 use Domain\Users\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -99,7 +100,17 @@ class AdminPaymentsController extends Controller
 
         // Ensure user is enrolled
         if (! $student->enrolled_courses()->where('course_id', $course->id)->exists()) {
-            $student->enrolled_courses()->attach($course->id, ['status' => PaymentStatusEnum::COMPLETED()->value]);
+            $referrerType = $student->parent?->user_type;
+            $referredById = $student->parent_id && in_array($referrerType, [
+                UserTypeEnum::TEACHER()->value,
+                UserTypeEnum::FACULTY_MEMBER()->value,
+            ]) ? $student->parent_id : null;
+
+            $student->enrolled_courses()->attach($course->id, [
+                'status' => PaymentStatusEnum::COMPLETED()->value,
+                'referred_by_id' => $referredById,
+                'source' => $referredById ? 'teacher' : 'organic',
+            ]);
         }
 
         $student->enrolled_courses()->updateExistingPivot($course->id, [

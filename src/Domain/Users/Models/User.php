@@ -207,7 +207,8 @@ class User extends Authenticatable implements HasMedia
     {
 
         return $this->belongsToMany(Course::class, 'enrollments')
-            ->withPivot('status', 'payment_method', 'installment_progress');
+            ->withPivot('status', 'payment_method', 'installment_progress', 'referred_by_id', 'source')
+            ->withTimestamps();
     }
 
     public function today_attendance(): HasOne
