@@ -43,7 +43,7 @@ class LoginController extends BaseController
 
     public function logout(Request $request)
     {
-        (new CheckOutAction)->handle($this->guard()->user(), $request->get('total_hours'));
+        (new CheckOutAction)->handle($this->guard()->user());
 
         $this->guard()->logout();
         $request->session()->invalidate();

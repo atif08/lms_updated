@@ -8,20 +8,36 @@ use Domain\Users\Models\User;
 
 class CheckOutAction
 {
-    public function handle(User $user, ?string $hours)
+    public function handle(User $user, bool $autoCheckout = false): void
     {
-        // Check if the user is a student
-        if ($user->user_type == UserTypeEnum::STANDARD_STUDENT() || $user->user_type == UserTypeEnum::ACCELERATED_STUDENT()) {
-
-            $checkOutTime = Carbon::now('Asia/Dubai');
-            // Update the check-out time and hours worked
-            if ($user->today_attendance) {
-                $user->today_attendance->update([
-                    'check_out' => $checkOutTime,
-                    'hours' => $hours,
-                ]);
-            }
-
+        if (
+            $user->user_type != UserTypeEnum::STANDARD_STUDENT()->value &&
+            $user->user_type != UserTypeEnum::ACCELERATED_STUDENT()->value
+        ) {
+            return;
         }
+
+        $attendance = $user->today_attendance;
+
+        if (! $attendance || ! $attendance->check_in || $attendance->check_out) {
+            return;
+        }
+
+        $checkOut = Carbon::now('Asia/Dubai');
+        $checkIn = Carbon::parse($attendance->check_in, 'Asia/Dubai');
+        $totalSeconds = max(0, $checkOut->diffInSeconds($checkIn));
+
+        $hours = sprintf(
+            '%02d:%02d:%02d',
+            floor($totalSeconds / 3600),
+            floor(($totalSeconds % 3600) / 60),
+            $totalSeconds % 60
+        );
+
+        $attendance->update([
+            'check_out' => $checkOut,
+            'hours' => $hours,
+            'auto_checked_out' => $autoCheckout,
+        ]);
     }
 }

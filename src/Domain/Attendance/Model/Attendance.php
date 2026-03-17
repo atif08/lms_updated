@@ -13,7 +13,7 @@ class Attendance extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable = ['user_id', 'batch_id', 'date', 'status', 'remarks', 'check_in', 'check_out', 'hours'];
+    protected $fillable = ['user_id', 'batch_id', 'date', 'status', 'remarks', 'check_in', 'check_out', 'hours', 'auto_checked_out'];
 
     public function user(): BelongsTo
     {
