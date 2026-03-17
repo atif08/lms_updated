@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\Settings;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Domain\Users\Enums\UserTypeEnum;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;

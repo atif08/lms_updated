@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataTables\Attributes;
+namespace App\Admin\DataTables\Attributes;
 
 use Carbon\Carbon;
 use Illuminate\Support\Collection;

@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\Settings;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Domain\Users\Enums\UserTypeEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -13,8 +13,7 @@ class UsersDataTable extends BaseDataTable
 
     public function getBaseQuery()
     {
-
-        $query = DB::table('users as u')
+        $inner = DB::table('users as u')
             ->leftJoin('batches as b', 'u.batch_id', '=', 'b.id')
             ->leftJoin('enrollments as e', 'e.user_id', '=', 'u.id')
             ->leftJoin('courses as c', 'e.course_id', '=', 'c.id')
@@ -22,12 +21,16 @@ class UsersDataTable extends BaseDataTable
             ->leftJoin('users as f', 'cu.user_id', '=', 'f.id')
             ->whereIn('u.user_type', array_keys(UserTypeEnum::getUsersDropdown()))
             ->whereNull('u.deleted_at')
-            ->select($this->getSelectStatement());
+            ->select($this->getSelectStatement())
+            ->groupBy('u.id');
+
         if (auth()?->user()?->id) {
-            $query->where('u.id', '!=', auth()?->user()?->id);
+            $inner->where('u.id', '!=', auth()?->user()?->id);
         }
 
-        return $query->groupBy('u.id');
+        return DB::table(DB::raw("({$inner->toSql()}) as users_sub"))
+            ->mergeBindings($inner)
+            ->select('*');
     }
 
     public function getSelectStatement(): array
@@ -44,7 +47,6 @@ class UsersDataTable extends BaseDataTable
             'u.mobile',
             'u.is_active',
             'u.user_type',
-            'f.name',
             'u.created_at',
         ];
     }
@@ -60,10 +62,10 @@ class UsersDataTable extends BaseDataTable
                 'orderable' => false,
                 'searchable' => false,
             ],
-            'name' => [
+            'user_name' => [
                 'title' => __('Name'),
                 'data' => 'user_name',
-                'name' => 'u.name',
+                'name' => 'user_name',
                 'column_type' => 'text',
                 'raw' => true,
                 'content' => function ($row) {
@@ -73,19 +75,19 @@ class UsersDataTable extends BaseDataTable
             'email' => [
                 'title' => __('Email'),
                 'data' => 'email',
-                'name' => 'u.email',
+                'name' => 'email',
                 'column_type' => 'text',
             ],
             'mobile' => [
                 'title' => __('Phone'),
                 'data' => 'mobile',
-                'name' => 'u.mobile',
+                'name' => 'mobile',
                 'column_type' => 'text',
             ],
             'user_type' => [
                 'title' => __('User Type'),
                 'data' => 'user_type',
-                'name' => 'u.user_type',
+                'name' => 'user_type',
                 'column_type' => 'text',
                 'raw' => true,
                 'content' => function ($row) {
@@ -93,16 +95,16 @@ class UsersDataTable extends BaseDataTable
 
                 },
             ],
-            'batch' => [
+            'batch_name' => [
                 'title' => __('Batch'),
                 'data' => 'batch_name',
-                'name' => 'b.name',
+                'name' => 'batch_name',
                 'column_type' => 'text',
             ],
-            'course' => [
+            'course_name' => [
                 'title' => __('Course'),
                 'data' => 'course_name',
-                'name' => 'c.name',
+                'name' => 'course_name',
                 'column_type' => 'text',
                 //                'raw'         => true,
                 //                'content'     => function ($row) {
@@ -118,7 +120,7 @@ class UsersDataTable extends BaseDataTable
             'is_active' => [
                 'title' => __('Active'),
                 'data' => 'is_active',
-                'name' => 'u.is_active',
+                'name' => 'is_active',
                 'column_type' => 'boolean',
                 'raw' => 'true',
                 'content' => function ($row) {
@@ -132,7 +134,7 @@ class UsersDataTable extends BaseDataTable
             'created_at' => [
                 'title' => __('Created At'),
                 'data' => 'created_at',
-                'name' => 'u.created_at',
+                'name' => 'created_at',
                 'column_type' => 'date',
                 'searchable' => false,
             ],

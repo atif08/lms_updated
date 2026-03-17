@@ -2,7 +2,6 @@
 
 namespace App\Admin\DataTables;
 
-use App\DataTables\BaseDataTable;
 use App\Models\Batch;
 
 class BatchesDataTable extends BaseDataTable

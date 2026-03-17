@@ -2,7 +2,6 @@
 
 namespace App\Admin\DataTables;
 
-use App\DataTables\BaseDataTable;
 use Domain\Assignment\Models\SubmittedAssignment;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;

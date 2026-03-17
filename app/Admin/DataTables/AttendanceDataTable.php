@@ -2,7 +2,6 @@
 
 namespace App\Admin\DataTables;
 
-use App\DataTables\BaseDataTable;
 use Carbon\Carbon;
 use Domain\Attendance\Enums\AttendanceStatusEnum;
 use Illuminate\Database\Query\Builder;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataTables\Attributes;
+namespace App\Admin\DataTables\Attributes;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;

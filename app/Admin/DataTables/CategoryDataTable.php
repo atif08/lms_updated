@@ -2,7 +2,6 @@
 
 namespace App\Admin\DataTables;
 
-use App\DataTables\BaseDataTable;
 use Domain\Categories\Models\Category;
 
 class CategoryDataTable extends BaseDataTable

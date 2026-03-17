@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\FileLibrary;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Domain\FileLibrary\Models\FileLibrary;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 

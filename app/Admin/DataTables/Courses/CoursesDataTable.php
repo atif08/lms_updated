@@ -2,10 +2,9 @@
 
 namespace App\Admin\DataTables\Courses;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Domain\Courses\Models\Course;
 use Domain\Users\Enums\UserTypeEnum;
-use Faker\Provider\Base;
 
 class CoursesDataTable extends BaseDataTable
 {

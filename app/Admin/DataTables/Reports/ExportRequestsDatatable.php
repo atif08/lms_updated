@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\Reports;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use App\Models\ExportRequest;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\DataTables;
+namespace App\Admin\DataTables;
 
-use App\DataTables\Attributes\HasFilterAttributes;
-use App\DataTables\Attributes\HasFormattingAttributes;
-use App\DataTables\Attributes\HasOrderAttributes;
-use App\DataTables\Attributes\HasRenderAttributes;
+use App\Admin\DataTables\Attributes\HasFilterAttributes;
+use App\Admin\DataTables\Attributes\HasFormattingAttributes;
+use App\Admin\DataTables\Attributes\HasOrderAttributes;
+use App\Admin\DataTables\Attributes\HasRenderAttributes;
 use App\Helpers\CarbonHelper;
 use Domain\Users\Models\User;
 use Illuminate\Http\Request;

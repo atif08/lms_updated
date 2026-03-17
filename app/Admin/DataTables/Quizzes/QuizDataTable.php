@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\Quizzes;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Domain\Quizzes\Models\Quiz;
 use Domain\Users\Enums\UserTypeEnum;
 

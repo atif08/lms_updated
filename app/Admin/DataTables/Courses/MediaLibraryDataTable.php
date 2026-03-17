@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\Courses;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaLibraryDataTable extends BaseDataTable

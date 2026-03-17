@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\Settings;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Spatie\Permission\Models\Role;
 
 class RolesDataTable extends BaseDataTable

@@ -2,7 +2,7 @@
 
 namespace App\Admin\DataTables\Courses;
 
-use App\DataTables\BaseDataTable;
+use App\Admin\DataTables\BaseDataTable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
