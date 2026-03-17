@@ -4,19 +4,19 @@ const AVATAR_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
 import { useEffect, useRef, useState } from 'react';
 
 export default function MainLayout({ children, hideHeader = false }) {
-    const { auth, domain, flash } = usePage().props;
+    const { auth, domain, flash, marketplace } = usePage().props;
     const user = auth?.user;
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {!hideHeader && <Header user={user} domain={domain} />}
+            {!hideHeader && <Header user={user} marketplace={marketplace} />}
             <main>{children}</main>
             <FlashMessages flash={flash} />
         </div>
     );
 }
 
-function Header({ user, domain }) {
+function Header({ user, marketplace }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -30,7 +30,7 @@ function Header({ user, domain }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const logoSrc = domain?.is_asti ? '/frontend/img/ASTI.png' : '/frontend/img/BUC.png';
+    const logoSrc = marketplace ? '/images/logo-asti.png' : '/images/logo-btc.png';
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-50">
