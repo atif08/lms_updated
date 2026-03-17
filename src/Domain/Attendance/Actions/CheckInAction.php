@@ -27,12 +27,9 @@ class CheckInAction
                 ]
             );
 
-            if (! $attendance->wasRecentlyCreated) {
-                // Update the check-in time if the record already exists and check_in is null
-                if (! $attendance->check_in) {
-                    $attendance->check_in = Carbon::now();
-                    $attendance->save();
-                }
+            if (! $attendance->wasRecentlyCreated && ! $attendance->check_in) {
+                $attendance->check_in = Carbon::now('Asia/Dubai');
+                $attendance->save();
             }
         }
     }

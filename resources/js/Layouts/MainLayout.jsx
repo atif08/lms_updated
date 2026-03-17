@@ -93,7 +93,7 @@ function Header({ user, marketplace }) {
                                             </DropdownLink>
                                         )}
 
-                                        <LogoutButton totalHoursRef={null} />
+                                        <LogoutButton />
                                     </div>
                                 )}
                             </div>
@@ -149,7 +149,6 @@ function DropdownLink({ href, icon, children }) {
 
 function LogoutButton() {
     const handleLogout = () => {
-        // Submit logout via form POST to preserve CSRF
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '/logout';

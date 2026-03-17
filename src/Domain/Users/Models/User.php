@@ -213,7 +213,7 @@ class User extends Authenticatable implements HasMedia
 
     public function today_attendance(): HasOne
     {
-        return $this->hasOne(Attendance::class)->latest('date');
+        return $this->hasOne(Attendance::class)->whereDate('date', today())->latest();
     }
 
     public function calendar_events(): HasMany

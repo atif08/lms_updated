@@ -60,7 +60,9 @@ class HandleInertiaRequests extends Middleware
                         UserTypeEnum::ADMIN(),
                         UserTypeEnum::FACULTY_MEMBER(),
                     ]),
-                    'check_in' => $user->today_attendance?->check_in,
+                    'check_in' => $user->today_attendance?->check_in
+                        ? \Carbon\Carbon::parse($user->today_attendance->check_in, 'Asia/Dubai')->toIso8601String()
+                        : null,
                 ] : null,
             ],
 
