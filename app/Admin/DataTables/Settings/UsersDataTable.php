@@ -28,6 +28,10 @@ class UsersDataTable extends BaseDataTable
             $inner->where('u.id', '!=', auth()?->user()?->id);
         }
 
+        if ($this->request->input('not_enrolled')) {
+            $inner->whereNull('e.id');
+        }
+
         return DB::table(DB::raw("({$inner->toSql()}) as users_sub"))
             ->mergeBindings($inner)
             ->select('*');

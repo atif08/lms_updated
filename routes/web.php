@@ -22,6 +22,7 @@ use App\Admin\Quizzes\Controllers\QuizAttemptController;
 use App\Admin\Quizzes\Controllers\QuizController;
 use App\Admin\Quizzes\Controllers\QuizSectionController;
 use App\Admin\Reports\Controllers\ExportRequestController;
+use App\Admin\Reports\Controllers\ReferralReportController;
 use App\Admin\Settings\Controllers\PermissionsController;
 use App\Admin\Settings\Controllers\RolesController;
 use App\Admin\SupportTicket\Controllers\SupportTicketController;
@@ -209,6 +210,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('/support-tickets', SupportTicketController::class);
 
     });
+    Route::get('referral-report', [ReferralReportController::class, 'index'])->name('referral-report.index');
 
 });
 

@@ -120,9 +120,13 @@ class PaymentController extends Controller
         $referredById = null;
         $source = 'organic';
 
-        if ($user->parent_id && $user->parent?->user_type == \Domain\Users\Enums\UserTypeEnum::FACULTY_MEMBER()) {
+        $referrerType = $user->parent?->user_type;
+        if ($user->parent_id && in_array($referrerType, [
+            \Domain\Users\Enums\UserTypeEnum::TEACHER()->value,
+            \Domain\Users\Enums\UserTypeEnum::FACULTY_MEMBER()->value,
+        ])) {
             $referredById = $user->parent_id;
-            $source = 'faculty';
+            $source = 'teacher';
         }
 
         $user->enrolled_courses()->syncWithoutDetaching([
