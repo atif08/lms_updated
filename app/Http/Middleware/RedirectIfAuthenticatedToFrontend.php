@@ -17,7 +17,7 @@ class RedirectIfAuthenticatedToFrontend
     public function handle(Request $request, Closure $next): Response
     {
         if (! Auth::check()) {
-            return to_route('get.login'); // Replace with your frontend login URL
+            return redirect()->guest(route('get.register'));
         }
 
         return $next($request);

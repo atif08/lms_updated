@@ -31,7 +31,12 @@
       "mcp__laravel-boost__database-query",
       "mcp__laravel-boost__get-absolute-url",
       "Bash(find /Users/sixlogics_7/sites/lms_updated/resources/views/marketplace/pages -name \"*.blade.php\" \\\\\n  -exec sed -i '' \"s|@extends\\('frontend\\\\.layouts\\\\.front_layout'\\)|@extends\\('marketplace.layouts.front_layout'\\)|g\" {} +)",
-      "mcp__laravel-boost__browser-logs"
+      "mcp__laravel-boost__browser-logs",
+      "Bash(cd:*)",
+      "Bash(for f:*)",
+      "Read(//Users/sixlogics_7/sites/lms_updated/resources/views/marketplace/pages/**)",
+      "Bash(do)",
+      "Bash(echo \"=== $f ===\")"
     ]
   },
   "enableAllProjectMcpServers": true,

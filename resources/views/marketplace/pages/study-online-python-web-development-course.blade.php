@@ -529,7 +529,7 @@
                 Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('login') }}">
+            <a href="{{ route('get.register') }}?redirect={{ urlencode(route('courses.checkout', $course->slug)) }}" class="enroll-button">
                 Enroll Now
             </a>
         @endif
@@ -1029,7 +1029,7 @@
                 Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('login') }}">
+            <a href="{{ route('get.register') }}?redirect={{ urlencode(route('courses.checkout', $course->slug)) }}" class="enroll-button">
                 Enroll Now
             </a>
         @endif
@@ -1492,7 +1492,7 @@
                 Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('login') }}">
+            <a href="{{ route('get.register') }}?redirect={{ urlencode(route('courses.checkout', $course->slug)) }}" class="enroll-button">
                 Enroll Now
             </a>
         @endif

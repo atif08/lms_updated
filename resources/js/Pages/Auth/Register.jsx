@@ -1,5 +1,4 @@
-import { useForm, Link } from '@inertiajs/react';
-import { useMemo } from 'react';
+import { useForm, Link, usePage } from '@inertiajs/react';
 import AuthLayout from '@/Layouts/AuthLayout';
 
 const COUNTRY_CODES = [
@@ -27,7 +26,8 @@ const COUNTRY_CODES = [
 const inputClass = 'w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500';
 
 export default function Register() {
-    const ref = useMemo(() => new URLSearchParams(window.location.search).get('ref') ?? '', []);
+    const { redirectTo } = usePage().props;
+    const ref = new URLSearchParams(window.location.search).get('ref') ?? '';
 
     const { data, setData, post, processing, errors } = useForm({
         first_name: '',
@@ -38,6 +38,7 @@ export default function Register() {
         password: '',
         password_confirmation: '',
         ref,
+        redirect_to: redirectTo ?? '/students/dashboard',
     });
 
     const submit = (e) => {

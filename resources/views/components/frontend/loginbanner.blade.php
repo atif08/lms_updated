@@ -1,4 +1,4 @@
-@if (!Route::is(['get.login', 'new-password', 'forgot-password', 'get.register', 'verification-code','password.reset']))
+@if (!Route::is(['login', 'new-password', 'forgot-password', 'get.register', 'verification-code','password.reset']))
     <!-- Login Banner -->
     <div class="col-lg-4 col-md-6 login-bg">
         <div class="owl-carousel login-slide owl-theme">
@@ -36,7 +36,7 @@
     </div>
     <!-- /Login Banner -->
 @endif
-@if (Route::is(['get.login', 'new-password', 'forgot-password', 'get.register', 'verification-code','password.request','password.reset']))
+@if (Route::is(['login', 'new-password', 'forgot-password', 'get.register', 'verification-code','password.request','password.reset']))
     <!-- Login Banner -->
     <div class="col-md-6 login-bg">
         <div class="owl-carousel login-slide owl-theme">

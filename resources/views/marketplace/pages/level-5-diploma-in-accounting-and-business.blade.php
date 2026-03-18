@@ -421,7 +421,7 @@
                 Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('login') }}">
+            <a href="{{ route('get.register') }}?redirect={{ urlencode(route('courses.checkout', $course->slug)) }}" class="enroll-button">
                 Enroll Now
             </a>
         @endif
@@ -757,11 +757,11 @@
     <div class="button-enrollNow">
         @if (\Illuminate\Support\Facades\Auth::check())
             <a href="{{ route('courses.checkout', $course->slug) }}" class="enroll-button">
-                Apply Now
+                Enroll Now
             </a>
         @else
-            <a class="enroll-button" href="{{ route('login') }}">
-                Apply Now
+            <a href="{{ route('get.register') }}?redirect={{ urlencode(route('courses.checkout', $course->slug)) }}" class="enroll-button">
+                Enroll Now
             </a>
         @endif
 
@@ -1526,12 +1526,12 @@
 
     <div class="button-enrollNow">
         @if (\Illuminate\Support\Facades\Auth::check())
-            <button id="pay-button" class="enroll-button">
-                Register Now
-            </button>
+            <a href="{{ route('courses.checkout', $course->slug) }}" class="enroll-button">
+                Enroll Now
+            </a>
         @else
-            <a class="enroll-button" href="{{ route('login') }}">
-                Register Now
+            <a href="{{ route('get.register') }}?redirect={{ urlencode(route('courses.checkout', $course->slug)) }}" class="enroll-button">
+                Enroll Now
             </a>
         @endif
 

@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
-use Inertia\Response;
 use Support\Enums\DomainListEnum;
 
 class AuthController extends Controller
@@ -69,9 +68,15 @@ class AuthController extends Controller
         }
     }
 
-    public function getRegister(Request $request): Response
+    public function getRegister(Request $request): mixed
     {
-        return Inertia::render('Auth/Register');
+        if (Auth::check()) {
+            return Inertia::location($request->query('redirect', '/students/dashboard'));
+        }
+
+        return Inertia::render('Auth/Register', [
+            'redirectTo' => $request->query('redirect', '/students/dashboard'),
+        ]);
     }
 
     public function postRegister(Request $request)
@@ -104,7 +109,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return Inertia::location('/');
+        return Inertia::location($request->input('redirect_to', '/students/dashboard'));
     }
 
     public function dashboard()

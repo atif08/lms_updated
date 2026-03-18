@@ -2,12 +2,12 @@
 
 namespace App\Frontend\Home\Controllers;
 
-use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Controller;
 use Domain\Courses\Models\Course;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class PagesController extends BaseController
+class PagesController extends Controller
 {
     public function getHome(Request $request): View
     {
