@@ -4,12 +4,22 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <a href="{{ route('home') }}" class="logo logo-light">
-            <span class="logo-sm">
-                <img src="{{ asset('images/logo-sm.png') }}" alt="" height="30">
+            @if(config('app.marketplace_enabled'))
+                <span class="logo-sm">
+                <img src="{{ asset('images/logo-asti.png') }}" alt="" height="30">
             </span>
-            <span class="logo-lg">
-                <img src="{{ asset('images/logo-dark.png') }}" alt="" height="55">
+                <span class="logo-lg">
+                <img src="{{ asset('images/logo-asti.png') }}" alt="" height="55">
             </span>
+            @else
+                <span class="logo-sm">
+                <img src="{{ asset('images/logo-btc.png') }}" alt="" height="30">
+            </span>
+                <span class="logo-lg">
+                <img src="{{ asset('images/logo-btc.png') }}" alt="" height="55">
+            </span>
+            @endif
+
         </a>
     </div>
 
