@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Domain\Attendance\Model\Attendance;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class AutoCheckoutAttendance extends Command
 {
@@ -14,6 +15,8 @@ class AutoCheckoutAttendance extends Command
 
     public function handle(): void
     {
+        Log::info("Auto-checked out start");
+
         $openRecords = Attendance::query()
             ->whereNotNull('check_in')
             ->whereNull('check_out')
@@ -50,5 +53,6 @@ class AutoCheckoutAttendance extends Command
         }
 
         $this->info("Auto-checked out {$openRecords->count()} attendance record(s).");
+        Log::info("Auto-checked out {$openRecords->count()} attendance record(s).");
     }
 }
