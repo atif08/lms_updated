@@ -10,7 +10,6 @@ class CheckoutController extends Controller
 {
     public function index(Request $request, Course $course)
     {
-        dd('adsf');
         $page = 'Checkout - '.$course->name;
 
         $enrollment = $request->user()

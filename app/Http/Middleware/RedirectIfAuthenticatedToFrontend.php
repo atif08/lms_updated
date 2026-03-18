@@ -17,7 +17,7 @@ class RedirectIfAuthenticatedToFrontend
     public function handle(Request $request, Closure $next): Response
     {
         if (! Auth::check()) {
-            return redirect()->guest(route('get.register'));
+            return redirect(route('get.register').'?redirect='.urlencode($request->fullUrl()));
         }
 
         return $next($request);
