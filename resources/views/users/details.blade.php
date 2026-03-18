@@ -32,3 +32,29 @@
         @endif
     </div> <!-- end row -->
 @endsection
+
+@push('scripts')
+<script>
+    const STUDENT_TYPES = ['STANDARD_STUDENT', 'ACCELERATED_STUDENT'];
+
+    function toggleUserTypeFields(userType) {
+        const isStudent = STUDENT_TYPES.includes(userType);
+
+        $('#role').closest('.form-group').toggle(!isStudent);
+        $('#batch_id').closest('.form-group').toggle(isStudent);
+        $('#course_id').closest('.form-group').toggle(isStudent);
+    }
+
+    $(document).ready(function () {
+        const $userType = $('#user_type');
+
+        if ($userType.length) {
+            toggleUserTypeFields($userType.val());
+
+            $userType.on('change', function () {
+                toggleUserTypeFields($(this).val());
+            });
+        }
+    });
+</script>
+@endpush
