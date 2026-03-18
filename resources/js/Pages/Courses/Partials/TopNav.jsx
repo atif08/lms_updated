@@ -1,4 +1,6 @@
 export default function TopNav({ course, progress }) {
+    const { percentage = 0, completed = 0, total = 0 } = progress ?? {};
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 h-14 bg-gray-900 flex items-center justify-between px-5">
             <a href="/courses/enrolled" className="flex items-center gap-1.5 text-white text-sm hover:text-gray-300 transition-colors">
@@ -9,15 +11,24 @@ export default function TopNav({ course, progress }) {
             </a>
 
             <div className="flex items-center gap-3">
-                <span className="text-white text-xs font-medium">Progress</span>
-                <div className="relative w-36 h-7 bg-gray-600 rounded-full overflow-hidden">
-                    <div
-                        className="h-full rounded-full transition-all duration-1000"
-                        style={{ width: `${progress}%`, backgroundColor: `hsl(${progress * 1.2}, 100%, 45%)` }}
-                    />
-                    <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
-                        {progress}%
-                    </span>
+                <div className="flex flex-col items-end gap-1">
+                    <div className="flex items-center gap-2">
+                        <span className="text-gray-400 text-xs">
+                            <span className="text-white font-semibold">{completed}</span>
+                            {' of '}
+                            <span className="text-white font-semibold">{total}</span>
+                            {' complete'}
+                        </span>
+                        <span className="text-xs font-bold" style={{ color: `hsl(${percentage * 1.2}, 80%, 55%)` }}>
+                            {percentage}%
+                        </span>
+                    </div>
+                    <div className="w-48 h-2 bg-gray-600 rounded-full overflow-hidden">
+                        <div
+                            className="h-full rounded-full transition-all duration-700"
+                            style={{ width: `${percentage}%`, backgroundColor: `hsl(${percentage * 1.2}, 80%, 45%)` }}
+                        />
+                    </div>
                 </div>
             </div>
         </nav>

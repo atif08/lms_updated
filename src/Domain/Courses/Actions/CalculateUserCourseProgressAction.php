@@ -8,10 +8,15 @@ use Domain\Users\Enums\UserTypeEnum;
 
 class CalculateUserCourseProgressAction
 {
-    public function handle(Course $course): float|int
+    /**
+     * @return array{percentage: int, completed: int, total: int}
+     */
+    public function handle(Course $course): array
     {
-        // Initialize the lessons query
-        $lessonsQuery = $course->lessons()->where('lessons.is_active', 1);
+        // Initialize the lessons query — only lessons from active topics
+        $lessonsQuery = $course->lessons()
+            ->where('topics.is_active', 1)
+            ->where('lessons.is_active', 1);
 
         // Apply the fast track condition if the user is FAST_TRACK
         if (auth()->user()->user_type == UserTypeEnum::ACCELERATED_STUDENT()) {
@@ -21,18 +26,29 @@ class CalculateUserCourseProgressAction
         // Fetch the lessons with media count
         $lessons = $lessonsQuery->withCount('media')->get();
 
-        // Sum up the total media count
-        $totalMediaCount = $lessons->sum('media_count');
+        // Sum up the media count from Media-type lessons only
+        $totalMediaCount = $lessons
+            ->where('type', LessonTypeEnum::Media())
+            ->sum('media_count');
 
-        // Count lessons without media, that are active, and not of type Media
+        // Count non-Media type lessons (each counts as one completable unit)
         $lessonsWithNoMediaCount = $lessons
-            ->where('type', '!=', LessonTypeEnum::Media()) // Filter non-media lessons
+            ->where('type', '!=', LessonTypeEnum::Media())
             ->count();
 
-        // Calculate the total lessons (media + non-media lessons)
-        $lesson_total = $totalMediaCount + $lessonsWithNoMediaCount;
+        // Total completable units = individual media items + non-media lessons
+        $total = $totalMediaCount + $lessonsWithNoMediaCount;
 
-        // Return the calculated points percentage based on total lessons and progress
-        return get_points_percentage($lesson_total, $course->user_course_progress()->count());
+        // Count only completed progress records for this user and course
+        $completed = $course->user_course_progress()->where('completed', true)->count();
+
+        if ($total === 0 || $completed === 0) {
+            return ['percentage' => 0, 'completed' => $completed, 'total' => $total];
+        }
+
+        // Round to whole number, but guarantee at least 1% when any progress exists
+        $percentage = max(1, (int) round(($completed / $total) * 100));
+
+        return ['percentage' => $percentage, 'completed' => $completed, 'total' => $total];
     }
 }

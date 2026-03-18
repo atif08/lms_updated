@@ -9,7 +9,7 @@ import InstallmentPaymentModal from './Partials/InstallmentPaymentModal';
 export default function Details({ course, topics, assignments, course_progress, enrollment }) {
     const [activeContent, setActiveContent] = useState(null);
     const [activeTab, setActiveTab]         = useState('overview');
-    const [progress, setProgress]           = useState(course_progress);
+    const [progress, setProgress]           = useState(course_progress ?? { percentage: 0, completed: 0, total: 0 });
     const [openTopics, setOpenTopics]       = useState(new Set());
     const [payingInstallment, setPayingInstallment] = useState(null);
     const [installmentProgress, setInstallmentProgress] = useState(enrollment.installment_progress);
