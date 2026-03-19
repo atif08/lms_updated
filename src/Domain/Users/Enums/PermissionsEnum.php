@@ -21,6 +21,7 @@ use Spatie\Enum\Enum;
  * @method static self BATCHES()
  * @method static self ATTENDANCES()
  * @method static self EXPORT_REQUESTS()
+ * @method static self PAYMENTS()
  */
 final class PermissionsEnum extends Enum
 {
@@ -40,6 +41,7 @@ final class PermissionsEnum extends Enum
             'BATCHES' => 'BATCHES',
             'ATTENDANCES' => 'ATTENDANCES',
             'EXPORT_REQUESTS' => 'EXPORT_REQUESTS',
+            'PAYMENTS' => 'PAYMENTS',
         ];
     }
 

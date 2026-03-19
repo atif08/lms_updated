@@ -64,6 +64,12 @@ return [
                 'url' => 'admin/submitted-assignments',
                 'permissions' => [\Domain\Users\Enums\PermissionsEnum::SUBMITTED_ASSIGNMENTS()->value], // Add permissions here
             ],
+            'payments' => [
+                'icon' => 'fas fa-book',
+                'title' => 'Payments',
+                'url' => 'admin/payments',
+                'permissions' => [\Domain\Users\Enums\PermissionsEnum::PAYMENTS()->value], // Add permissions here
+            ],
         ],
     ],
     'quiz' => [
