@@ -18,7 +18,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Lesson extends Model implements HasMedia
 {
-    use HasFactory,InteractsWithMedia,SoftDeletes;
+    use InteractsWithMedia,SoftDeletes;
 
     protected $fillable = ['topic_id', 'name', 'type', 'description', 'external_link', 'order', 'is_active', 'is_fast_track'];
 

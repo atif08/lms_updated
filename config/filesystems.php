@@ -32,7 +32,7 @@ return [
     'disks' => [
         'media-temp' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/media-temp'),
+            'root' => storage_path('media-library'),
             'url' => env('APP_URL').'/storage/media-temp',
             'visibility' => 'public',
         ],
